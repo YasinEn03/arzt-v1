@@ -13,11 +13,11 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
--- https://www.postgresql.org/docs/current/sql-droptable.html
+-- https://www.sqlite.org/lang_dropindex.html
+DROP INDEX IF EXISTS abbildung_buch_id_idx;
+DROP INDEX IF EXISTS buch_isbn_idx;
 
-DROP TABLE IF EXISTS patient CASCADE;
-DROP TABLE IF EXISTS praxis CASCADE;
-DROP TABLE IF EXISTS arzt CASCADE;
-
--- https://www.postgresql.org/docs/current/sql-droptype.html
-DROP TYPE IF EXISTS arztart;
+-- https://www.sqlite.org/lang_droptable.html
+DROP TABLE IF EXISTS abbildung;
+DROP TABLE IF EXISTS titel;
+DROP TABLE IF EXISTS buch;

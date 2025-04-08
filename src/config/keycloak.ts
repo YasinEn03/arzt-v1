@@ -29,8 +29,45 @@ import { env } from './env.js';
 import { httpsOptions } from './https.js';
 
 const { keycloak } = config;
-const authServerUrl =
-    (keycloak?.authServerUrl as string | undefined) ?? 'http://localhost:8880';
+
+if (keycloak !== undefined && keycloak !== null) {
+    if (
+        keycloak.schema !== undefined &&
+        typeof keycloak.schema !== 'string' &&
+        keycloak.port !== undefined &&
+        typeof keycloak.port !== 'number'
+    ) {
+        throw new TypeError(
+            'Die Konfiguration für Keycloak (Schema und Port) ist falsch',
+        );
+    }
+    if (keycloak.realm !== undefined && typeof keycloak.realm !== 'string') {
+        throw new TypeError(
+            'Der konfigurierte Realm-Name für Keycloak ist kein String',
+        );
+    }
+    if (
+        keycloak.clientId !== undefined &&
+        typeof keycloak.clientId !== 'string'
+    ) {
+        throw new TypeError(
+            'Der konfigurierte Client-ID für Keycloak ist kein String',
+        );
+    }
+    if (
+        keycloak.tokenValidation !== undefined &&
+        Object.values(TokenValidation).includes(keycloak.tokenValidation) // eslint-disable-line @typescript-eslint/no-unsafe-argument
+    ) {
+        throw new TypeError(
+            'Der konfigurierte Wert für TokenValidation bei Keycloak ist ungültig',
+        );
+    }
+}
+
+const schema = (keycloak?.schema as string | undefined) ?? 'http';
+const host = (keycloak?.host as string | undefined) ?? 'keycloak';
+const port = (keycloak?.port as number | undefined) ?? 8080;
+const authServerUrl = `${schema}://${host}:${port}`;
 // Keycloak ist in Sicherheits-Bereich (= realms) unterteilt
 const realm = (keycloak?.realm as string | undefined) ?? 'nest';
 const clientId = (keycloak?.clientId as string | undefined) ?? 'nest-client';

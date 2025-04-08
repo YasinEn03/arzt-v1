@@ -24,11 +24,15 @@ import { env } from './env.js';
  * @packageDocumentation
  */
 
-const logDirDefault = 'log';
+const logDirDefault = '/tmp';
 const logFileNameDefault = 'server.log';
 const logFileDefault = path.resolve(logDirDefault, logFileNameDefault);
 
 const { log } = config;
+
+if (log !== null && log.dir !== undefined && typeof log.dir !== 'string') {
+    throw new TypeError('Das konfigurierte Log-Verzeichnis ist kein String');
+}
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const logDir: string | undefined =
@@ -85,7 +89,7 @@ const options: pino.TransportMultiOptions | pino.TransportSingleOptions = pretty
 const transports = pino.transport(options); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
 
 // https://github.com/pinojs/pino/issues/1160#issuecomment-944081187
-export const parentLogger: pino.Logger<string> =
-    logLevel === 'info'
-        ? pino(pino.destination(logFileDefault))
-        : pino({ level: logLevel }, transports); // eslint-disable-line @typescript-eslint/no-unsafe-argument
+export const parentLogger: pino.Logger<string> = pino(
+    { level: logLevel },
+    transports,
+); // eslint-disable-line @typescript-eslint/no-unsafe-argument

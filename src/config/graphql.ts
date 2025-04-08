@@ -15,15 +15,9 @@
 
 import { ApolloDriver, type ApolloDriverConfig } from '@nestjs/apollo';
 import path from 'node:path';
-import { BASEDIR } from './app.js';
+import { RESOURCES_DIR } from './app.js';
 
-const schemaGraphQL = path.join(
-    BASEDIR,
-    'config',
-    'resources',
-    'graphql',
-    'schema.graphql',
-);
+const schemaGraphQL = path.join(RESOURCES_DIR, 'graphql', 'schema.graphql');
 console.debug('schemaGraphQL = %s', schemaGraphQL);
 
 /**
