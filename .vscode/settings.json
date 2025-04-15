@@ -28,5 +28,10 @@
   "peacock.color": "#215732",
   "postman.telemetry.enabled": false,
   "postman.account.region": "EU",
-  "asciidoc.antora.showEnableAntoraPrompt": false
+  "asciidoc.antora.showEnableAntoraPrompt": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.sortImports": "explicit"
+  }
 }

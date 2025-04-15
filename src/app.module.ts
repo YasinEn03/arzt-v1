@@ -1,18 +1,3 @@
-// Copyright (C) 2021 - present Juergen Zimmermann, Hochschule Karlsruhe
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program. If not, see <https://www.gnu.org/licenses/>.
-
 import { type ApolloDriverConfig } from '@nestjs/apollo';
 import {
     type MiddlewareConsumer,
@@ -22,6 +7,7 @@ import {
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdminModule } from './admin/admin.module.js';
+import { ArztModule } from './arzt/arzt.module.js';
 import { ArztGetController } from './arzt/controller/arzt-get.controller.js';
 import { ArztWriteController } from './arzt/controller/arzt-write.controller.js';
 import { DevModule } from './config/dev/dev.module.js';
@@ -34,6 +20,7 @@ import { KeycloakModule } from './security/keycloak/keycloak.module.js';
 @Module({
     imports: [
         AdminModule,
+        ArztModule,
         DevModule,
         GraphQLModule.forRoot<ApolloDriverConfig>(graphQlModuleOptions),
         LoggerModule,

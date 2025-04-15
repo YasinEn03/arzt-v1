@@ -20,6 +20,7 @@ import {
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
     ApiBadRequestResponse,
     ApiBearerAuth,
@@ -33,18 +34,17 @@ import {
     ApiResponse,
     ApiTags,
 } from '@nestjs/swagger';
-import { Request, Response } from 'express';
+import { Express, Request, Response } from 'express';
 import { AuthGuard, Public, Roles } from 'nest-keycloak-connect';
 import { paths } from '../../config/paths.js';
 import { getLogger } from '../../logger/logger.js';
 import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
-import { Arzt, ArztArt } from '../entity/arzt.entity.js';
+import { type Arzt } from '../entity/arzt.entity.js';
 import { type Patient } from '../entity/patient.entity.js';
 import { type Praxis } from '../entity/praxis.entity.js';
 import { ArztWriteService } from '../service/arzt-write.service.js';
 import { ArztDTO, ArztDtoOhneRef } from './arztDTO.entity.js';
 import { createBaseUri } from './createBaseUri.js';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 const MSG_FORBIDDEN = 'Kein Token mit ausreichender Berechtigung vorhanden';
 /**
@@ -185,10 +185,7 @@ export class ArztWriteController {
     @Put(':id')
     @Roles('admin', 'user')
     @HttpCode(HttpStatus.NO_CONTENT)
-    @ApiOperation({
-        summary: 'Ein vorhandenes Arzt aktualisieren',
-        tags: ['Aktualisieren'],
-    })
+    @ApiOperation({ summary: 'Ein vorhandenes Arzt aktualisieren' })
     @ApiHeader({
         name: 'If-Match',
         description: 'Header für optimistische Synchronisation',
@@ -206,7 +203,11 @@ export class ArztWriteController {
     @ApiForbiddenResponse({ description: MSG_FORBIDDEN })
     async put(
         @Body() arztDTO: ArztDtoOhneRef,
-        @Param('id') id: number,
+        @Param(
+            'id',
+            new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_FOUND }),
+        )
+        id: number,
         @Headers('If-Match') version: string | undefined,
         @Res() res: Response,
     ): Promise<Response> {
@@ -276,7 +277,7 @@ export class ArztWriteController {
             id: undefined,
             version: undefined,
             name: arztDTO.name,
-            art: arztDTO.art as ArztArt,
+            art: arztDTO.art,
             fachgebiet: arztDTO.fachgebiet,
             telefonnummer: arztDTO.telefonnummer,
             geburtsdatum: arztDTO.geburtsdatum,
@@ -301,7 +302,7 @@ export class ArztWriteController {
             id: undefined,
             version: undefined,
             name: arztDTO.name,
-            art: arztDTO.art as ArztArt,
+            art: arztDTO.art,
             fachgebiet: arztDTO.fachgebiet,
             telefonnummer: arztDTO.telefonnummer,
             geburtsdatum: arztDTO.geburtsdatum,

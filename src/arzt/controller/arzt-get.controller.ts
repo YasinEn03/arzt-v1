@@ -11,9 +11,11 @@ import {
     HttpStatus,
     NotFoundException,
     Param,
+    ParseIntPipe,
     Query,
     Req,
     Res,
+    StreamableFile,
     UseInterceptors,
 } from '@nestjs/common';
 import {
@@ -28,55 +30,15 @@ import {
 } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { Public } from 'nest-keycloak-connect';
+import { Readable } from 'stream';
 import { paths } from '../../config/paths.js';
 import { getLogger } from '../../logger/logger.js';
 import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
-import { Arzt } from '../entity/arzt.entity.js';
-import { Praxis } from '../entity/praxis.entity.js';
+import { Arzt, ArztArt } from '../entity/arzt.entity.js';
 import { ArztReadService } from '../service/arzt-read.service.js';
+import { createPageable } from '../service/pageable.js';
 import { type Suchkriterien } from '../service/suchkriterien.js';
-import { getBaseUri } from './getBaseUri.js';
-
-/** href-Link für HATEOAS */
-export type Link = {
-    /** href-Link für HATEOAS-Links */
-    readonly href: string;
-};
-
-/** Links für HATEOAS */
-export type Links = {
-    /** self-Link */
-    readonly self: Link;
-    /** Optionaler Linke für list */
-    readonly list?: Link;
-    /** Optionaler Linke für add */
-    readonly add?: Link;
-    /** Optionaler Linke für update */
-    readonly update?: Link;
-    /** Optionaler Linke für remove */
-    readonly remove?: Link;
-};
-
-/** Typedefinition für ein Praxis-Objekt ohne Rückwärtsverweis zum Arzt */
-export type PraxisModel = Omit<Praxis, 'arzt' | 'id'>;
-
-/** Arzt-Objekt mit HATEOAS-Links */
-export type ArztModel = Omit<
-    Arzt,
-    'patienten' | 'aktualisiert' | 'erstellt' | 'id' | 'praxis' | 'version'
-> & {
-    praxis: PraxisModel;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    _links: Links;
-};
-
-/** Arzt-Objekte mit HATEOAS-Links in einem JSON-Array. */
-export type AerzteModel = {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    _embedded: {
-        aerzte: ArztModel[];
-    };
-};
+import { createPage } from './page.js';
 
 /**
  * Klasse für `ArztGetController`, um Queries in _OpenAPI_ bzw. Swagger zu
@@ -96,19 +58,32 @@ export class ArztQuery implements Suchkriterien {
     declare readonly fachgebiet: string;
 
     @ApiProperty({ required: false })
+    declare readonly art?: ArztArt;
+
+    @ApiProperty({ required: false })
     declare readonly telefonnummer: string;
 
     @ApiProperty({ required: false })
     declare readonly geburtsdatum: Date;
 
     @ApiProperty({ required: false })
+    declare readonly javascript?: string;
+
+    @ApiProperty({ required: false })
+    declare readonly typescript?: string;
+
+    @ApiProperty({ required: false })
     declare readonly praxis: string;
+
+    @ApiProperty({ required: false })
+    declare size?: string;
+
+    @ApiProperty({ required: false })
+    declare page?: string;
 }
 
-const APPLICATION_HAL_JSON = 'application/hal+json';
-
 /**
- * Die Controller-Klasse für die Verwaltung von Bücher.
+ * Die Controller-Klasse für die Verwaltung von Aerzte.
  */
 // Decorator in TypeScript, zur Standardisierung in ES vorgeschlagen (stage 3)
 // https://devblogs.microsoft.com/typescript/announcing-typescript-5-0-beta/#decorators
@@ -145,7 +120,7 @@ export class ArztGetController {
      * Falls es kein Arzt zur angegebenen ID gibt, wird der Statuscode `404`
      * (`Not Found`) zurückgeliefert.
      *
-     * @param idStr Pfad-Parameter `id`
+     * @param id Pfad-Parameter `id`
      * @param req Request-Objekt von Express mit Pfadparameter, Query-String,
      *            Request-Header und Request-Body.
      * @param version Versionsnummer im Request-Header bei `If-None-Match`
@@ -169,22 +144,21 @@ export class ArztGetController {
     @ApiNotFoundResponse({ description: 'Kein Arzt zur ID gefunden' })
     @ApiResponse({
         status: HttpStatus.NOT_MODIFIED,
-        description: 'Der Arzt wurde bereits heruntergeladen',
+        description: 'Das Arzt wurde bereits heruntergeladen',
     })
     async getById(
-        @Param('id') idStr: string,
+        @Param(
+            'id',
+            new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_FOUND }),
+        )
+        id: number,
         @Req() req: Request,
         @Headers('If-None-Match') version: string | undefined,
         @Res() res: Response,
-    ): Promise<Response<ArztModel | undefined>> {
-        this.#logger.debug('getById: idStr=%s, version=%s', idStr, version);
-        const id = Number(idStr);
-        if (!Number.isInteger(id)) {
-            this.#logger.debug('getById: not isInteger()');
-            throw new NotFoundException(`Die Arzt-ID ${idStr} ist ungueltig.`);
-        }
+    ): Promise<Response<Arzt | undefined>> {
+        this.#logger.debug('getById: id=%s, version=%s', id, version);
 
-        if (req.accepts([APPLICATION_HAL_JSON, 'json', 'html']) === false) {
+        if (req.accepts(['json', 'html']) === false) {
             this.#logger.debug('getById: accepted=%o', req.accepted);
             return res.sendStatus(HttpStatus.NOT_ACCEPTABLE);
         }
@@ -192,7 +166,7 @@ export class ArztGetController {
         const arzt = await this.#service.findById({ id });
         if (this.#logger.isLevelEnabled('debug')) {
             this.#logger.debug('getById(): arzt=%s', arzt.toString());
-            this.#logger.debug('getById(): praxis=%s', arzt.praxis);
+            this.#logger.debug('getById(): praxis=%o', arzt.praxis);
         }
 
         // ETags
@@ -204,22 +178,20 @@ export class ArztGetController {
         this.#logger.debug('getById: versionDb=%s', versionDb);
         res.header('ETag', `"${versionDb}"`);
 
-        // HATEOAS mit Atom Links und HAL (= Hypertext Application Language)
-        const arztModel = this.#toModel(arzt, req);
-        this.#logger.debug('getById: arztModel=%o', arztModel);
-        return res.contentType(APPLICATION_HAL_JSON).json(arztModel);
+        this.#logger.debug('getById: arzt=%o', arzt);
+        return res.json(arzt);
     }
 
     /**
-     * Bücher werden mit Query-Parametern asynchron gesucht. Falls es mindestens
+     * Aerzte werden mit Query-Parametern asynchron gesucht. Falls es mindestens
      * ein solches Arzt gibt, wird der Statuscode `200` (`OK`) gesetzt. Im Rumpf
-     * des Response ist das JSON-Array mit den gefundenen Büchern, die jeweils
+     * des Response ist das JSON-Array mit den gefundenen Aerzten, die jeweils
      * um Atom-Links für HATEOAS ergänzt sind.
      *
      * Falls es kein Arzt zu den Suchkriterien gibt, wird der Statuscode `404`
      * (`Not Found`) gesetzt.
      *
-     * Falls es keine Query-Parameter gibt, werden alle Bücher ermittelt.
+     * Falls es keine Query-Parameter gibt, werden alle Aerzte ermittelt.
      *
      * @param query Query-Parameter von Express.
      * @param req Request-Objekt von Express.
@@ -234,56 +206,66 @@ export class ArztGetController {
         @Query() query: ArztQuery,
         @Req() req: Request,
         @Res() res: Response,
-    ): Promise<Response<AerzteModel | undefined>> {
+    ): Promise<Response<Arzt[] | undefined>> {
         this.#logger.debug('get: query=%o', query);
 
-        if (req.accepts([APPLICATION_HAL_JSON, 'json', 'html']) === false) {
+        if (req.accepts(['json', 'html']) === false) {
             this.#logger.debug('get: accepted=%o', req.accepted);
             return res.sendStatus(HttpStatus.NOT_ACCEPTABLE);
         }
 
-        const aerzte = await this.#service.find(query);
-        this.#logger.debug('get: %o', aerzte);
+        const { page, size } = query;
+        delete query['page'];
+        delete query['size'];
+        this.#logger.debug('get: page=%s, size=%s', page, size);
 
-        // HATEOAS: Atom Links je Arzt
-        const aerzteModel = aerzte.map((arzt) =>
-            this.#toModel(arzt, req, false),
-        );
-        this.#logger.debug('get: aerzteModel=%o', aerzteModel);
+        const keys = Object.keys(query) as (keyof ArztQuery)[];
+        keys.forEach((key) => {
+            if (query[key] === undefined) {
+                delete query[key];
+            }
+        });
+        this.#logger.debug('get: query=%o', query);
 
-        const result: AerzteModel = { _embedded: { aerzte: aerzteModel } };
-        return res.contentType(APPLICATION_HAL_JSON).json(result).send();
+        const pageable = createPageable({ number: page, size });
+        const aerzteSlice = await this.#service.find(query, pageable);
+        const arztPage = createPage(aerzteSlice, pageable);
+        this.#logger.debug('get: arztPage=%o', arztPage);
+
+        return res.json(arztPage).send();
     }
 
-    #toModel(arzt: Arzt, req: Request, all = true) {
-        const baseUri = getBaseUri(req);
-        this.#logger.debug('#toModel: baseUri=%s', baseUri);
-        const { id } = arzt;
-        const links = all
-            ? {
-                  self: { href: `${baseUri}/${id}` },
-                  list: { href: `${baseUri}` },
-                  add: { href: `${baseUri}` },
-                  update: { href: `${baseUri}/${id}` },
-                  remove: { href: `${baseUri}/${id}` },
-              }
-            : { self: { href: `${baseUri}/${id}` } };
+    @Get('/file/:id')
+    @Public()
+    @ApiOperation({ description: 'Suche nach Datei mit der Arzt-ID' })
+    @ApiParam({
+        name: 'id',
+        description: 'Z.B. 1',
+    })
+    @ApiNotFoundResponse({ description: 'Keine Datei zur Arzt-ID gefunden' })
+    @ApiOkResponse({ description: 'Die Datei wurde gefunden' })
+    async getFileById(
+        @Param('id') idStr: number,
+        @Res({ passthrough: true }) res: Response,
+    ) {
+        this.#logger.debug('getFileById: arztId:%s', idStr);
 
-        this.#logger.debug('#toModel: arzt=%o, links=%o', arzt, links);
-        const praxisModel: PraxisModel = {
-            praxis: arzt.praxis?.praxis ?? 'N/A',
-            adresse: arzt.praxis?.adresse ?? 'N/A',
-            telefonnummer: arzt.praxis?.telefonnummer ?? 'N/A',
-        };
-        const arztModel: ArztModel = {
-            name: arzt.name,
-            fachgebiet: arzt.fachgebiet,
-            telefonnummer: arzt.telefonnummer,
-            geburtsdatum: arzt.geburtsdatum,
-            praxis: praxisModel,
-            _links: links,
-        };
+        const id = Number(idStr);
+        if (!Number.isInteger(id)) {
+            this.#logger.debug('getById: not isInteger()');
+            throw new NotFoundException(`Die Arzt-ID ${idStr} ist ungueltig.`);
+        }
 
-        return arztModel;
+        const arztFile = await this.#service.findFileByArztId(id);
+        if (arztFile?.data === undefined) {
+            throw new NotFoundException('Keine Datei gefunden.');
+        }
+
+        const stream = Readable.from(arztFile.data);
+        res.contentType(arztFile.mimetype ?? 'image/png').set({
+            'Content-Disposition': `inline; filename="${arztFile.filename}"`, // eslint-disable-line @typescript-eslint/naming-convention
+        });
+
+        return new StreamableFile(stream);
     }
 }

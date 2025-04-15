@@ -15,6 +15,7 @@ import {
     Matches,
     ValidateNested,
 } from 'class-validator';
+import { ArztArt } from '../entity/arzt.entity';
 import { PatientDTO } from './patientDTO.entity.js';
 import { PraxisDTO } from './praxisDTO.entity.js';
 
@@ -28,7 +29,7 @@ export class ArztDtoOhneRef {
     @Matches(/^(C|RAD|KAR|HNO|AUG)$/u)
     @IsOptional()
     @ApiProperty({ example: 'C', type: String })
-    readonly art: string | undefined;
+    readonly art: ArztArt | undefined;
 
     @Matches(/^(KARDIOLOGIE|RADIOLOGIE|CHIRURGIE)$/u)
     @ApiProperty({ example: 'KARDIOLOGE', type: String })
