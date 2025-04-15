@@ -9,7 +9,7 @@ import { exec } from 'node:child_process';
 import { platform } from 'node:os';
 import { resolve } from 'node:path';
 
-const nvdApiKey = '47fbc0a4-9240-4fda-9a26-d7d5624c16bf';
+const nvdApiKey = 'eab16cf7-fd2b-4af9-a697-c1749ca8eca0';
 const project = 'arzt';
 
 let baseExecPath;
