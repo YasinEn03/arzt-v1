@@ -1,8 +1,8 @@
 {
-  "name": "buch",
+  "name": "arzt",
   "version": "2025.4.1",
-  "description": "Beispiel",
-  "author": "Juergen Zimmermann",
+  "description": "Arzt - A REST and GraphQL API for the medical field",
+  "author": "Yasin Enes Ayyildiz",
   "private": true,
   "license": "GPL-3.0",
   "exports": "./dist/src/main.js",

@@ -1,0 +1,6 @@
+id,name,fachgebiet,art,telefonnummer,geburtsdatum,schlagwoerter
+1,Dr. Max Mustermann,Allgemeinmedizin,C,+49 151 12345678,1970-04-12,JAVA
+20,Dr. Julia Sommer,Kardiologie,KAR,+49 170 98765432,1982-11-30,JAVASCRIPT
+30,Dr. Ali Kaya,Radiologie,RAD,+49 160 45678901,1975-02-18,PYTHON
+40,Dr. Anna Becker,Orthopädie,ORTH,+49 171 11223344,1980-08-22,JAVA
+50,Dr. Lukas Weber,Neurologie,NEU,+49 170 22334455,1978-03-05,JAVASCRIPT

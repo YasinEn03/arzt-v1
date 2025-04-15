@@ -76,7 +76,7 @@ pipeline {
 
                 // https://www.jenkins.io/doc/pipeline/steps/git
                 // "named arguments" statt Funktionsaufruf mit Klammern
-                git url: 'https://github.com/juergenzimmermann/buch', branch: 'main', poll: true
+                git url: 'https://github.com/juergenzimmermann/arzt', branch: 'main', poll: true
             }
         }
 
@@ -132,7 +132,7 @@ pipeline {
                 }
 
                 // /var/jenkins_home ist das Homedirectory vom User "jenkins"
-                // /var/jenkins_home/workspace/buch (siehe "pwd" oben)
+                // /var/jenkins_home/workspace/arzt (siehe "pwd" oben)
                 sh 'cat package.json'
 
                 // Konfigurationsverzeichnis /root/.npm
@@ -212,14 +212,14 @@ pipeline {
 
                 success {
                     script {
-                        if (fileExists("${env.WORKSPACE}/buch.zip")) {
-                            sh 'rm buch.zip'
+                        if (fileExists("${env.WORKSPACE}/arzt.zip")) {
+                            sh 'rm arzt.zip'
                         }
                     }
                     // https://www.jenkins.io/doc/pipeline/steps/pipeline-utility-steps/#zip-create-zip-file
-                    zip zipFile: 'buch.zip', archive: false, dir: 'dist'
-                    // jobs/buch/builds/.../archive/buch.zip
-                    archiveArtifacts 'buch.zip'
+                    zip zipFile: 'arzt.zip', archive: false, dir: 'dist'
+                    // jobs/arzt/builds/.../archive/arzt.zip
+                    archiveArtifacts 'arzt.zip'
                 }
             }
         }
@@ -228,7 +228,7 @@ pipeline {
             steps {
                 echo 'TODO: Docker-Image bauen'
                 // https://www.jenkins.io/doc/book/pipeline/docker/#building-containers
-                // def image = docker.build("juergenzimmermann/buch:${env.BUILD_ID}")
+                // def image = docker.build("juergenzimmermann/arzt:${env.BUILD_ID}")
                 // image.push()
                 // image.push('latest')
             }

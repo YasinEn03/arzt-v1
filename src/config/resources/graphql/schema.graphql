@@ -22,16 +22,16 @@ schema {
 
 "Funktionen, um Bücherdaten zu lesen"
 type Query {
-  buecher(suchkriterien: SuchkriterienInput): [Buch!]
+  aerzte(suchkriterien: SuchkriterienInput): [Arzt!]
 
-  buch(id: ID!): Buch
+  arzt(id: ID!): Arzt
 }
 
 "Funktionen, um Bücher neu anzulegen, zu aktualisieren oder zu löschen"
 type Mutation {
-  create(input: BuchInput!): CreatePayload
+  create(input: ArztInput!): CreatePayload
 
-  update(input: BuchUpdateInput!): UpdatePayload
+  update(input: ArztUpdateInput!): UpdatePayload
 
   delete(id: ID!): Boolean
 
@@ -40,97 +40,90 @@ type Mutation {
   refresh(refresh_token: String!): TokenResult
 }
 
-"Daten zum Titel eines Buches"
-type Titel {
-  titel: String!
-  untertitel: String
+"Daten zum Praxis eines Arztes"
+type Praxis {
+  praxis: String!
+  adresse: String
+  telefonnummer: String
+  homepage: String
 }
 
-"Daten zum Titel eines Buches"
-type Abbildung {
-  beschriftung: String!
-  contentType: String
+"Daten zum Patienten eines Arztes"
+type Patient {
+  name: String!
+  geburtsdatum: String!
+  telefonnummer: String
+  adresse: String
 }
 
-"Datenschema zu einem Buch, das gelesen wird"
-type Buch {
+"Datenschema zu einem Arzt, das gelesen wird"
+type Arzt {
   # ID ist bei Apollo ein String
   id: Int!
   version: Int!
-  isbn: String!
-  rating: Int
+  name: String
   art: Art
-  preis: Float!
-  lieferbar: Boolean
-  datum: String
-  homepage: String
+  fachgebiet: String
+  geburtsdatum: String
   schlagwoerter: [String]
   # 1:1-Beziehung
-  titel: Titel!
-  # field mit @ResolveField
-  rabatt(short: Boolean): String!
+  praxis: Praxis!
 }
 
-"Enum-Typ für die Art eines Buches"
+"Enum-Typ für die Art eines Arztes"
 enum Art {
-  EPUB
-  HARDCOVER
-  PAPERBACK
+  CHIRURGIE
+  RADIOLOGIE
+  KARDIOLOGIE
+  HALSNASENOHREN
+  AUGEN
 }
 
 "Suchkriterien für Bücher"
 input SuchkriterienInput {
-  titel: String
-  isbn: String
-  rating: Int
-  art: Art
-  lieferbar: Boolean
+  praxis: String
+  name: String
+  fachgebiet: String
 }
 
-"Daten zum Titel eines neuen Buches"
-input TitelInput {
-  titel: String!
-  untertitel: String
+"Daten zum Praxis eines neuen Arztes"
+input PraxisInput {
+  praxis: String!
+  adresse: String
+  telefonnummer: String
+  email: String
 }
 
-"Daten zu den Abbildungen eines Buches"
-input AbbildungInput {
-  beschriftung: String!
-  contentType: String!
+"Daten zu den Patienten eines Arztes"
+input PatientInput {
+  name: String!
+  geburtsdatum: String!
+  telefonnummer: String
+  adresse: String
 }
 
-"Daten für ein neues Buch"
-input BuchInput {
-  isbn: String
-  rating: Int
-  art: Art
-  preis: Float
-  rabatt: Float
-  lieferbar: Boolean
-  datum: String
-  homepage: String
-  schlagwoerter: [String]
-  titel: TitelInput!
-  abbildungen: [AbbildungInput!]
+"Daten für ein neuen Arzt"
+input ArztInput {
+  name: String!
+  fachgebiet: String!
+  geburtsdatum: String
+  telefonnummer: String
+  praxis: PraxisInput!
+  patienten: [PatientInput!]
 }
 
 type CreatePayload {
   id: Int
 }
 
-"Daten für ein zu änderndes Buch"
-input BuchUpdateInput {
+"Daten für ein zu ändernden Arztes#"
+input ArztUpdateInput {
   id: ID
   version: Int
-  isbn: String
-  rating: Int
-  art: Art
-  preis: Float
-  rabatt: Float
-  lieferbar: Boolean
-  datum: String
-  homepage: String
-  schlagwoerter: [String]
+  name: String
+  fachgebiet: String
+  telefonnummer: String
+  geburtsdatum: String
 }
 
 type UpdatePayload {
