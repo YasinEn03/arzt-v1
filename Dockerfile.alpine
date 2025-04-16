@@ -122,7 +122,7 @@ FROM node:${NODE_VERSION}-alpine3.21 AS final
 # https://specs.opencontainers.org/image-spec/annotations
 # https://spdx.org/licenses
 # MAINTAINER ist deprecated https://docs.docker.com/engine/reference/builder/#maintainer-deprecated
-LABEL org.opencontainers.image.title="buch" \
+LABEL org.opencontainers.image.title="arzt" \
   org.opencontainers.image.description="Appserver buch mit Basis-Image Alpine" \
   org.opencontainers.image.version="2025.4.1-bookworm" \
   org.opencontainers.image.licenses="GPL-3.0-or-later" \
