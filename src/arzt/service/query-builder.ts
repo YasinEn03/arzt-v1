@@ -12,7 +12,11 @@ import { Arzt } from '../entity/arzt.entity.js';
 import { Patient } from '../entity/patient.entity.js';
 import { Praxis } from '../entity/praxis.entity.js';
 import { type Suchkriterien } from './suchkriterien.js';
-import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, Pageable } from './pageable.js';
+import {
+    DEFAULT_PAGE_NUMBER,
+    DEFAULT_PAGE_SIZE,
+    Pageable,
+} from './pageable.js';
 
 /** Typdefinitionen für die Suche mit der Arzt-ID. */
 export type BuildIdParams = {
@@ -82,17 +86,18 @@ export class QueryBuilder {
     // z.B. { praxis: 'a', rating: 5, javascript: true }
     // "rest properties" fuer anfaengliche WHERE-Klausel: ab ES 2018 https://github.com/tc39/proposal-object-rest-spread
     build(
-        { 
-            praxis, 
-            javascript, 
-            typescript, 
-            java, 
-            python, 
-            ...restProps 
+        {
+            praxis,
+            javascript,
+            typescript,
+            java,
+            python,
+            ...restProps
         }: Suchkriterien,
         pageable: Pageable,
     ) {
-        this.#logger.debug('build: praxis=%s, javascript=%s, typescript=%s, java=%s, python=%s, restProps=%o, pageable=%o', 
+        this.#logger.debug(
+            'build: praxis=%s, javascript=%s, typescript=%s, java=%s, python=%s, restProps=%o, pageable=%o',
             praxis,
             javascript,
             typescript,
@@ -185,7 +190,7 @@ export class QueryBuilder {
         });
 
         this.#logger.debug('build: sql=%s', queryBuilder.getSql());
-        
+
         if (pageable?.size === 0) {
             return queryBuilder;
         }

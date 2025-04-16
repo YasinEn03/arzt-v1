@@ -25,8 +25,8 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 # https://docs.locust.io/en/stable/api.html#httpuser-class
-class BuchRequests(HttpUser):
-    """Lasttest für HTTP-Requests fuer Server Buch."""
+class ArztRequests(HttpUser):
+    """Lasttest für HTTP-Requests fuer Server Arzt."""
 
     # https://docs.locust.io/en/stable/writing-a-locustfile.html#wait-time-attribute
     # https://docs.locust.io/en/stable/api.html#locust.User.wait_time
@@ -45,28 +45,28 @@ class BuchRequests(HttpUser):
     # https://docs.locust.io/en/stable/api.html#locust.User.weight
     @task(100)
     def get_id(self) -> None:
-        """GET-Requests mit Pfadparameter: Buch-ID."""
+        """GET-Requests mit Pfadparameter: Arzt-ID."""
         id_list: Final = [1, 20, 30, 40, 50, 60]
-        for buch_id in id_list:
-            self.client.get(f"/rest/{buch_id}")
+        for arzt_id in id_list:
+            self.client.get(f"/rest/{arzt_id}")
 
     @task(200)
-    def get_titel(self) -> None:
-        """GET-Requests mit Query-Parameter: Teilstring des Buchtitels."""
-        titel_list = ["a", "l", "t", "i", "p"]
-        for teil in titel_list:
-            self.client.get("/rest", params={"titel": teil})
+    def get_praxis(self) -> None:
+        """GET-Requests mit Query-Parameter: Praxisname."""
+        praxis_list = ["Dr. Bernd", "l", "t", "i", "p"]
+        for name in praxis_list:
+            self.client.get("/rest", params={"praxis": name})
 
     @task(150)
-    def get_isbn(self) -> None:
-        """GET-Requests mit Query-Parameter: ISBN-Nummer."""
-        isbn_list: Final = [
-            "978-3-897-22583-1",
-            "978-3-827-31552-6",
-            "978-0-201-63361-0",
-            "978-0-007-09732-6",
-            "978-3-824-40481-0",
-            "978-3-540-43081-0",
+    def get_name(self) -> None:
+        """GET-Requests mit Query-Parameter: Name."""
+        name_list: Final = [
+            "Bernd Brot",
+            "Ali Yilmaz",
+            "X",
+            "Y",
+            "Z",
+            "A",
         ]
-        for isbn in isbn_list:
-            self.client.get("/rest", params={"isbn": isbn})
+        for name in name_list:
+            self.client.get("/rest", params={"name": name})

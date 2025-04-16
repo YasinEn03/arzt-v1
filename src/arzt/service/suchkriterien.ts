@@ -23,4 +23,4 @@ export interface Suchkriterien {
     readonly java?: string;
     readonly python?: string;
     readonly praxis?: string;
-};
+}

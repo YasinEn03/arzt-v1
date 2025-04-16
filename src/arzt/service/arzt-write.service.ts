@@ -10,6 +10,7 @@ import { type DeleteResult, Repository } from 'typeorm';
 import { getLogger } from '../../logger/logger.js';
 import { MailService } from '../../mail/mail.service.js';
 import { Arzt } from '../entity/arzt.entity.js';
+import { ArztFile } from '../entity/arztFile.entity.js';
 import { Patient } from '../entity/patient.entity.js';
 import { Praxis } from '../entity/praxis.entity.js';
 import { ArztReadService } from './arzt-read.service.js';
@@ -18,7 +19,6 @@ import {
     VersionInvalidException,
     VersionOutdatedException,
 } from './exceptions.js';
-import { ArztFile } from '../entity/arztFile.entity.js';
 
 /** Typdefinitionen zum Aktualisieren eines Arztes mit `update`. */
 export type UpdateParams = {
@@ -80,11 +80,11 @@ export class ArztWriteService {
 
     /**
      * Zu einem vorhandenen Arzt eine Binärdatei mit z.B. einem Bild abspeichern.
-     * @param arztId ID des vorhandenen Buches
+     * @param arztId ID des vorhandenen Arztes
      * @param data Bytes der Datei
      * @param filename Dateiname
      * @param mimetype MIME-Type
-     * @returns Entity-Objekt für `BuchFile`
+     * @returns Entity-Objekt für `ArztFile`
      */
     // eslint-disable-next-line max-params
     async addFile(
@@ -94,7 +94,7 @@ export class ArztWriteService {
         mimetype: string,
     ): Promise<Readonly<ArztFile>> {
         this.#logger.debug(
-            'addFile: buchId: %d, filename:%s, mimetype: %s',
+            'addFile: arztId: %d, filename:%s, mimetype: %s',
             arztId,
             filename,
             mimetype,
@@ -118,7 +118,7 @@ export class ArztWriteService {
             arzt,
         });
 
-        // Den Datensatz fuer Buch mit der neuen Binaerdatei aktualisieren
+        // Den Datensatz fuer Arzt mit der neuen Binaerdatei aktualisieren
         await this.#repo.save({
             id: arzt.id,
             file: arztFile,

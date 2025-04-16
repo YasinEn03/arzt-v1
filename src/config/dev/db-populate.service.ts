@@ -29,8 +29,8 @@ import { getLogger } from '../../logger/logger.js';
 import { dbType } from '../db.js';
 import {
     adminDataSourceOptions,
-    dbPopulate,
     dbDir,
+    dbPopulate,
     typeOrmModuleOptions,
 } from '../typeormOptions.js';
 
@@ -42,7 +42,7 @@ import {
  */
 @Injectable()
 export class DbPopulateService implements OnApplicationBootstrap {
-    readonly #tabellen = ['buch', 'titel', 'abbildung'];
+    readonly #tabellen = ['arzt', 'praxis', 'patienten'];
 
     readonly #datasource: DataSource;
 

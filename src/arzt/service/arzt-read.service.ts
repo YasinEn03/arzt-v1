@@ -40,8 +40,9 @@ export class ArztReadService {
 
     readonly #logger = getLogger(ArztReadService.name);
 
-    constructor(queryBuilder: QueryBuilder,
-        @InjectRepository(ArztFile) fileRepo: Repository<ArztFile>
+    constructor(
+        queryBuilder: QueryBuilder,
+        @InjectRepository(ArztFile) fileRepo: Repository<ArztFile>,
     ) {
         const arztDummy = new Arzt();
         this.#arztProps = Object.getOwnPropertyNames(arztDummy);
@@ -68,7 +69,10 @@ export class ArztReadService {
      * @throws NotFoundException falls kein Arzt mit der ID existiert
      */
     // https://2ality.com/2015/01/es6-destructuring.html#simulating-named-parameters-in-javascript
-    async findById({ id, mitPatienten = true }: FindByIdParams) : Promise<Readonly<Arzt>> {
+    async findById({
+        id,
+        mitPatienten = true,
+    }: FindByIdParams): Promise<Readonly<Arzt>> {
         this.#logger.debug('findById: id=%d', id);
 
         // https://typeorm.io/working-with-repository
@@ -92,10 +96,7 @@ export class ArztReadService {
                 arzt.praxis,
             );
             if (mitPatienten) {
-                this.#logger.debug(
-                    'findById: patienten=%o', 
-                    arzt.patienten,
-                );
+                this.#logger.debug('findById: patienten=%o', arzt.patienten);
             }
         }
         return arzt;
@@ -110,8 +111,9 @@ export class ArztReadService {
     async find(
         suchkriterien: Suchkriterien | undefined,
         pageable: Pageable,
-    ) : Promise<Slice<Arzt>> {
-        this.#logger.debug('find: suchkriterien=%o, pageable=%o', 
+    ): Promise<Slice<Arzt>> {
+        this.#logger.debug(
+            'find: suchkriterien=%o, pageable=%o',
             suchkriterien,
             pageable,
         );
@@ -149,7 +151,9 @@ export class ArztReadService {
         const queryBuilder = this.#queryBuilder.build({}, pageable);
         const aerzte = await queryBuilder.getMany();
         if (aerzte.length === 0) {
-            throw new NotFoundException(`Ungueltige Seite "${pageable.number}"`);
+            throw new NotFoundException(
+                `Ungueltige Seite "${pageable.number}"`,
+            );
         }
         const totalElements = await queryBuilder.getCount();
         return this.#createSlice(aerzte, totalElements);
@@ -164,19 +168,19 @@ export class ArztReadService {
         const arztSlice: Slice<Arzt> = {
             content: aerzte,
             totalElements,
-    };
-    this.#logger.debug('createSlice: slice=%o', arztSlice);
-    return arztSlice;
+        };
+        this.#logger.debug('createSlice: slice=%o', arztSlice);
+        return arztSlice;
     }
 
     async findFileByArztId(
         arztId: number,
     ): Promise<Readonly<ArztFile> | undefined> {
         this.#logger.debug('findFileByArztId: arztId=%d', arztId);
-        const arztFile= await this.#fileRepo
-        .createQueryBuilder('arzt_file')
-        .where('arzt_id = :id', { id: arztId })
-        .getOne();
+        const arztFile = await this.#fileRepo
+            .createQueryBuilder('arzt_file')
+            .where('arzt_id = :id', { id: arztId })
+            .getOne();
         if (arztFile === null) {
             this.#logger.debug('findFileByArztId: Keine Datei gefunden');
             return;
@@ -208,7 +212,7 @@ export class ArztReadService {
         return validKeys;
     }
 
-    #checkEnums(suchkriterien: Suchkriterien){
+    #checkEnums(suchkriterien: Suchkriterien) {
         const { art } = suchkriterien;
         this.#logger.debug('#checkEnums: Suchkriterium "art=%s"', art);
 
