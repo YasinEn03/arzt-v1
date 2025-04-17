@@ -1,18 +1,3 @@
--- Copyright (C) 2022 - present Juergen Zimmermann, Hochschule Karlsruhe
---
--- This program is free software: you can redistribute it and/or modify
--- it under the terms of the GNU General Public License as published by
--- the Free Software Foundation, either version 3 of the License, or
--- (at your option) any later version.
---
--- This program is distributed in the hope that it will be useful,
--- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--- GNU General Public License for more details.
---
--- You should have received a copy of the GNU General Public License
--- along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 -- docker compose exec postgres bash
 -- psql --dbname=arzt --username=arzt --file=/scripts/create-table-arzt.sql
 
@@ -81,6 +66,7 @@ CREATE TABLE IF NOT EXISTS patienten (
     adresse         text NOT NULL,
     arzt_id         integer NOT NULL REFERENCES arzt
 ) TABLESPACE arztspace;
+CREATE INDEX IF NOT EXISTS patienten_arzt_id_idx ON patienten(arzt_id) TABLESPACE arztspace;
 
 CREATE TABLE IF NOT EXISTS arzt_file (
     id              integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE arztspace,
@@ -89,5 +75,6 @@ CREATE TABLE IF NOT EXISTS arzt_file (
     mimetype        text,
     arzt_id         integer NOT NULL REFERENCES arzt
 ) TABLESPACE arztspace;
+CREATE INDEX IF NOT EXISTS arzt_file_arzt_id_idx ON arzt_file(arzt_id) TABLESPACE arztspace;
 
-CREATE INDEX IF NOT EXISTS patienten_arzt_id_idx ON patienten(arzt_id) TABLESPACE arztspace;
+
