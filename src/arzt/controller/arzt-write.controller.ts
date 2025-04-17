@@ -263,7 +263,7 @@ export class ArztWriteController {
             arzt: undefined,
         };
         const patienten = arztDTO.patienten?.map((patientDTO) => {
-            const patient: Patient = {
+            const patienten: Patient = {
                 id: undefined,
                 name: patientDTO.name,
                 geburtsdatum: patientDTO.geburtsdatum,
@@ -271,7 +271,7 @@ export class ArztWriteController {
                 adresse: patientDTO.adresse,
                 arzt: undefined,
             };
-            return patient;
+            return patienten;
         });
         const arzt = {
             id: undefined,
