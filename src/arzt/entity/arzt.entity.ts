@@ -16,8 +16,8 @@ import {
 } from 'typeorm';
 import { dbType } from '../../config/db.js';
 import { ArztFile } from './arztFile.entity.js'; // Import der ArztFile-Entität
-import { Patient } from './patient.entity.js'; // Import der Patient-Entität
-import { Praxis } from './praxis.entity.js'; // Import der Praxis-Entität
+import { Patient } from './patient.entity.js';
+import { Praxis } from './praxis.entity.js';
 
 export type ArztArt = 'C' | 'RAD' | 'KAR' | 'HNO' | 'AUG';
 
@@ -63,8 +63,7 @@ export class Arzt {
     })
     readonly praxis: Praxis | undefined;
 
-    // 1:N Beziehung: Ein Arzt kann mehrere Patienten haben
-    @OneToMany(() => Patient, (patient) => patient.arzt, {
+    @OneToMany(() => Patient, (patienten) => patienten.arzt, {
         cascade: ['insert', 'remove'],
     })
     readonly patienten: Patient[] | undefined;

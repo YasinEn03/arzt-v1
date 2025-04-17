@@ -11,12 +11,12 @@ import { getLogger } from '../../logger/logger.js';
 import { Arzt } from '../entity/arzt.entity.js';
 import { Patient } from '../entity/patient.entity.js';
 import { Praxis } from '../entity/praxis.entity.js';
-import { type Suchkriterien } from './suchkriterien.js';
 import {
     DEFAULT_PAGE_NUMBER,
     DEFAULT_PAGE_SIZE,
     Pageable,
 } from './pageable.js';
+import { type Suchkriterien } from './suchkriterien.js';
 
 /** Typdefinitionen für die Suche mit der Arzt-ID. */
 export type BuildIdParams = {
