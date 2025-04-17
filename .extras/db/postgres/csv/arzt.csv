@@ -1,6 +1,6 @@
-id;name;fachgebiet;art;telefonnummer;geburtsdatum;schlagwoerter
-1;Max Mustermann;CHIRURGIE;C;+49 151 12345678;1970-04-12;JAVA
-20;Julia Sommer;Kardiologie;KAR;+49 170 98765432;1982-11-30;JAVASCRIPT
-30;Ali Kaya;Radiologie;RAD;+49 160 45678901;1975-02-18;PYTHON
-40;Anna Becker;Halsnasenohr;HNO;+49 171 11223344;1980-08-22;JAVA
-50;Lukas Weber;Augen;AUG;+49 170 22334455;1978-03-05;JAVASCRIPT
+id;version;name;fachgebiet;art;telefonnummer;geburtsdatum;schlagwoerter
+1;0;Max Mustermann;CHIRURGIE;C;+49 151 12345678;1970-04-12;JAVA
+20;0;Julia Sommer;Kardiologie;KAR;+49 170 98765432;1982-11-30;JAVASCRIPT
+30;0;Ali Kaya;Radiologie;RAD;+49 160 45678901;1975-02-18;PYTHON
+40;0;Anna Becker;Halsnasenohr;HNO;+49 171 11223344;1980-08-22;JAVA
+50;0;Lukas Weber;Augen;AUG;+49 170 22334455;1978-03-05;JAVASCRIPT

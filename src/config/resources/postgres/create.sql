@@ -52,12 +52,12 @@ CREATE TABLE IF NOT EXISTS arzt (
     version       integer NOT NULL DEFAULT 0,
                   -- impliziter Index als B-Baum durch UNIQUE
                   -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-UNIQUE-CONSTRAINTS
-    name          varchar(50) NOT NULL UNIQUE USING INDEX TABLESPACE arztspace,
+    name          text NOT NULL UNIQUE USING INDEX TABLESPACE arztspace,
                   -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-CHECK-CONSTRAINTS
                   -- https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-POSIX-REGEXP
-    fachgebiet    varchar(50) NOT NULL,
+    fachgebiet    text NOT NULL,
     art           arztart,
-    telefonnummer varchar(255),
+    telefonnummer text,
     geburtsdatum  date CHECK (geburtsdatum < current_date),
     schlagwoerter text,
     erstellt      timestamp NOT NULL DEFAULT NOW(),
@@ -67,18 +67,18 @@ CREATE TABLE IF NOT EXISTS arzt (
 CREATE TABLE IF NOT EXISTS praxis (
     id          integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE arztspace,
     praxis      text NOT NULL,
-    adresse     varchar(50),
-    telefonnummer varchar(30),
+    adresse     text,
+    telefonnummer text,
     arzt_id     integer NOT NULL UNIQUE USING INDEX TABLESPACE arztspace REFERENCES arzt
 ) TABLESPACE arztspace;
 
 
 CREATE TABLE IF NOT EXISTS patient (
     id              integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE arztspace,
-    name            varchar(40) NOT NULL,
+    name            text NOT NULL,
     geburtsdatum    date CHECK (geburtsdatum < current_date),
-    telefonnummer   varchar(255),
-    adresse         varchar(255) NOT NULL,
+    telefonnummer   text,
+    adresse         text NOT NULL,
     arzt_id         integer NOT NULL REFERENCES arzt
 ) TABLESPACE arztspace;
 
