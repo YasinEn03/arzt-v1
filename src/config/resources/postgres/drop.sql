@@ -15,7 +15,7 @@
 
 -- https://www.postgresql.org/docs/current/sql-droptable.html
 
-DROP TABLE IF EXISTS patient CASCADE;
+DROP TABLE IF EXISTS patienten CASCADE;
 DROP TABLE IF EXISTS praxis CASCADE;
 DROP TABLE IF EXISTS arzt CASCADE;
 

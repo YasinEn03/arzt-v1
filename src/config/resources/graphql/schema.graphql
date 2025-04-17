@@ -62,8 +62,8 @@ type Arzt {
   id: Int!
   version: Int!
   name: String
-  art: Art
   fachgebiet: String
+  art: Art
   geburtsdatum: String
   schlagwoerter: [String]
   # 1:1-Beziehung
@@ -106,8 +106,10 @@ input PatientInput {
 input ArztInput {
   name: String!
   fachgebiet: String!
+  art: Art
   geburtsdatum: String
   telefonnummer: String
+  schlagwoerter: [String]
   praxis: PraxisInput!
   patienten: [PatientInput!]
 }
@@ -122,8 +124,10 @@ input ArztUpdateInput {
   version: Int
   name: String
   fachgebiet: String
+  art: Art
   telefonnummer: String
   geburtsdatum: String
+  schlagwoerter: [String]
 }
 
 type UpdatePayload {

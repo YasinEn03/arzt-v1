@@ -31,7 +31,7 @@ export class ArztDtoOhneRef {
     @ApiProperty({ example: 'C', type: String })
     readonly art: ArztArt | undefined;
 
-    @Matches(/^(KARDIOLOGIE|RADIOLOGIE|CHIRURGIE)$/u)
+    @Matches(/^(KARDIOLOGIE|RADIOLOGIE|CHIRURGIE|HALSNASEHNOHREN|AUGEN)$/u)
     @ApiProperty({ example: 'KARDIOLOGE', type: String })
     readonly fachgebiet!: string;
 

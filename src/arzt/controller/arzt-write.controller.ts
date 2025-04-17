@@ -291,8 +291,8 @@ export class ArztWriteController {
 
         // Rueckwaertsverweise
         arzt.praxis.arzt = arzt;
-        arzt.patienten?.forEach((patient) => {
-            patient.arzt = arzt;
+        arzt.patienten?.forEach((patienten) => {
+            patienten.arzt = arzt;
         });
         return arzt;
     }
