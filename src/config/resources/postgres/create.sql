@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS praxis (
 ) TABLESPACE arztspace;
 
 
-CREATE TABLE IF NOT EXISTS patient (
+CREATE TABLE IF NOT EXISTS patienten (
     id              integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE arztspace,
     name            text NOT NULL,
     geburtsdatum    date CHECK (geburtsdatum < current_date),
@@ -90,4 +90,4 @@ CREATE TABLE IF NOT EXISTS arzt_file (
     arzt_id         integer NOT NULL REFERENCES arzt
 ) TABLESPACE arztspace;
 
-CREATE INDEX IF NOT EXISTS patient_arzt_id_idx ON patient(arzt_id) TABLESPACE arztspace;
+CREATE INDEX IF NOT EXISTS patienten_arzt_id_idx ON patienten(arzt_id) TABLESPACE arztspace;
