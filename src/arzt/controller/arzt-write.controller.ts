@@ -40,11 +40,11 @@ import { paths } from '../../config/paths.js';
 import { getLogger } from '../../logger/logger.js';
 import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
 import { type Arzt } from '../entity/arzt.entity.js';
-import { type Patient } from '../entity/patient.entity.js';
-import { type Praxis } from '../entity/praxis.entity.js';
 import { ArztWriteService } from '../service/arzt-write.service.js';
 import { ArztDTO, ArztDtoOhneRef } from './arztDTO.entity.js';
 import { createBaseUri } from './createBaseUri.js';
+import { Patienten } from '../entity/patienten.entity.js';
+import { Praxis } from '../entity/praxis.entity.js';
 
 const MSG_FORBIDDEN = 'Kein Token mit ausreichender Berechtigung vorhanden';
 /**
@@ -263,7 +263,7 @@ export class ArztWriteController {
             arzt: undefined,
         };
         const patienten = arztDTO.patienten?.map((patientDTO) => {
-            const patienten: Patient = {
+            const patienten: Patienten = {
                 id: undefined,
                 name: patientDTO.name,
                 geburtsdatum: patientDTO.geburtsdatum,

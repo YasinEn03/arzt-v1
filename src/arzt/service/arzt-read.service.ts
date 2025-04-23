@@ -4,15 +4,15 @@
  */
 
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { getLogger } from '../../logger/logger.js';
 import { Arzt } from '../entity/arzt.entity.js';
-import { QueryBuilder } from './query-builder.js';
-import { type Suchkriterien } from './suchkriterien.js';
-import { InjectRepository } from '@nestjs/typeorm';
 import { ArztFile } from '../entity/arztFile.entity.js';
-import { Repository } from 'typeorm';
 import { Pageable } from './pageable.js';
+import { QueryBuilder } from './query-builder.js';
 import { Slice } from './slice.js';
+import { type Suchkriterien } from './suchkriterien.js';
 
 /**
  * Typdefinition für `findById`
@@ -94,6 +94,7 @@ export class ArztReadService {
                 'findById: arzt=%s, praxis=%s',
                 arzt.toString(),
                 arzt.praxis,
+                arzt.patienten,
             );
             if (mitPatienten) {
                 this.#logger.debug('findById: patienten=%o', arzt.patienten);

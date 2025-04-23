@@ -8,7 +8,7 @@ import {
 import { Arzt } from './arzt.entity.js'; // Import der Arzt-Entität
 
 @Entity()
-export class Patient {
+export class Patienten {
     @PrimaryGeneratedColumn()
     id: number | undefined;
 

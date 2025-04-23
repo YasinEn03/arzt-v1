@@ -40,6 +40,7 @@ export class ArztQueryResolver {
                 'findById: arzt=%s, praxis=%s',
                 arzt.toString(),
                 arzt.praxis,
+                arzt.patienten,
             );
         }
         return arzt;

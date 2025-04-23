@@ -11,7 +11,7 @@ import { getLogger } from '../../logger/logger.js';
 import { MailService } from '../../mail/mail.service.js';
 import { Arzt } from '../entity/arzt.entity.js';
 import { ArztFile } from '../entity/arztFile.entity.js';
-import { Patient } from '../entity/patient.entity.js';
+import { Patienten } from '../entity/patienten.entity.js';
 import { Praxis } from '../entity/praxis.entity.js';
 import { ArztReadService } from './arzt-read.service.js';
 import {
@@ -189,7 +189,7 @@ export class ArztWriteService {
             // "Nullish Coalescing" ab ES2020
             const patienten = arzt.patienten ?? [];
             for (const patient of patienten) {
-                await transactionalMgr.delete(Patient, patient.id);
+                await transactionalMgr.delete(Patienten, patient.id);
             }
 
             deleteResult = await transactionalMgr.delete(Arzt, id);

@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 import { typeOrmModuleOptions } from '../../config/typeormOptions.js';
 import { getLogger } from '../../logger/logger.js';
 import { Arzt } from '../entity/arzt.entity.js';
-import { Patient } from '../entity/patient.entity.js';
+import { Patienten } from '../entity/patienten.entity.js';
 import { Praxis } from '../entity/praxis.entity.js';
 import {
     DEFAULT_PAGE_NUMBER,
@@ -39,9 +39,9 @@ export class QueryBuilder {
         .charAt(0)
         .toLowerCase()}${Praxis.name.slice(1)}`;
 
-    readonly #patientAlias = `${Patient.name
+    readonly #patientAlias = `${Patienten.name
         .charAt(0)
-        .toLowerCase()}${Patient.name.slice(1)}`;
+        .toLowerCase()}${Patienten.name.slice(1)}`;
 
     readonly #repo: Repository<Arzt>;
 

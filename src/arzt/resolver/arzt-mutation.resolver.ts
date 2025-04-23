@@ -7,7 +7,7 @@ import { getLogger } from '../../logger/logger.js';
 import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
 import { ArztDTO } from '../controller/arztDTO.entity.js';
 import { Arzt } from '../entity/arzt.entity.js';
-import { Patient } from '../entity/patient.entity.js';
+import { Patienten } from '../entity/patienten.entity.js';
 import { Praxis } from '../entity/praxis.entity.js';
 import { ArztWriteService } from '../service/arzt-write.service.js';
 import { type IdInput } from './arzt-query.resolver.js';
@@ -105,7 +105,7 @@ export class ArztMutationResolver {
         };
         // "Optional Chaining" ab ES2020
         const patienten = arztDTO.patienten?.map((patientDTO) => {
-            const patient: Patient = {
+            const patient: Patienten = {
                 id: undefined,
                 name: patientDTO.name,
                 geburtsdatum: patientDTO.geburtsdatum,
