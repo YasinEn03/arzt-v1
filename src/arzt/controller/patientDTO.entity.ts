@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsOptional, MaxLength } from 'class-validator';
+import { IsOptional, MaxLength } from 'class-validator';
 
 /**
  * DTO-Klasse für Patienten.
@@ -11,8 +11,7 @@ export class PatientDTO {
     @ApiProperty({ example: 'Max Mustermann', type: String })
     readonly name!: string; // Name des Patienten
 
-    @IsDate()
-    @ApiProperty({ example: '1990-01-01', type: String })
+    @ApiProperty({ example: '1990-01-01', type: Date })
     readonly geburtsdatum!: Date; // Geburtsdatum des Patienten
 
     @MaxLength(15)

@@ -218,6 +218,7 @@ export class ArztReadService {
         this.#logger.debug('#checkEnums: Suchkriterium "art=%s"', art);
 
         return (
+            art === undefined ||
             art === 'C' ||
             art === 'RAD' ||
             art === 'KAR' ||

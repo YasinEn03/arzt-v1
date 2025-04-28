@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
     Column,
     Entity,
@@ -16,7 +17,8 @@ export class Patienten {
     readonly name!: string; // Name des Patienten
 
     @Column('date')
-    readonly geburtsdatum!: Date | string; // Geburtsdatum des Patienten
+    @ApiProperty({ example: '1980-01-01' })
+    readonly geburtsdatum!: Date | string | undefined; // Geburtsdatum des Patienten
 
     @Column('varchar')
     readonly telefonnummer: string | undefined; // Telefonnummer des Patienten

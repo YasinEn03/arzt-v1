@@ -72,11 +72,11 @@ type Arzt {
 
 "Enum-Typ für die Art eines Arztes"
 enum Art {
-  CHIRURGIE
-  RADIOLOGIE
-  KARDIOLOGIE
-  HALSNASENOHREN
-  AUGEN
+  C
+  RAD
+  KAR
+  HNO
+  AUG
 }
 
 "Suchkriterien für Bücher"
@@ -84,6 +84,7 @@ input SuchkriterienInput {
   praxis: String
   name: String
   fachgebiet: String
+  art: Art
 }
 
 "Daten zum Praxis eines neuen Arztes"
@@ -97,7 +98,7 @@ input PraxisInput {
 "Daten zu den Patienten eines Arztes"
 input PatientenInput {
   name: String!
-  geburtsdatum: String!
+  geburtsdatum: String
   telefonnummer: String
   adresse: String
 }

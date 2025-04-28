@@ -14,10 +14,10 @@ import { type ArztArt } from '../entity/arzt.entity.js';
  */
 export interface Suchkriterien {
     readonly name?: string;
-    readonly geburtsdatum?: Date;
+    readonly fachgebiet?: string;
     readonly art?: ArztArt;
     readonly telefonnummer?: string;
-    readonly fachgebiet?: string;
+    readonly geburtsdatum?: Date;
     readonly javascript?: string;
     readonly typescript?: string;
     readonly java?: string;

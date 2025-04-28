@@ -15,7 +15,7 @@ import {
     Matches,
     ValidateNested,
 } from 'class-validator';
-import { ArztArt } from '../entity/arzt.entity';
+import { ArztArt } from '../entity/arzt.entity.js';
 import { PatientDTO } from './patientDTO.entity.js';
 import { PraxisDTO } from './praxisDTO.entity.js';
 
@@ -26,14 +26,14 @@ export class ArztDtoOhneRef {
     @ApiProperty({ example: 'Bernd Brot', type: String })
     readonly name!: string;
 
+    @Matches(/^(KARDIOLOGIE|RADIOLOGIE|CHIRURGIE|HALSNASEHNOHREN|AUGEN)$/u)
+    @ApiProperty({ example: 'KARDIOLOGE', type: String })
+    readonly fachgebiet!: string;
+
     @Matches(/^(C|RAD|KAR|HNO|AUG)$/u)
     @IsOptional()
     @ApiProperty({ example: 'C', type: String })
     readonly art: ArztArt | undefined;
-
-    @Matches(/^(KARDIOLOGIE|RADIOLOGIE|CHIRURGIE|HALSNASEHNOHREN|AUGEN)$/u)
-    @ApiProperty({ example: 'KARDIOLOGE', type: String })
-    readonly fachgebiet!: string;
 
     @IsPhoneNumber('DE')
     @ApiProperty({ example: '+49 176 89227837', type: String })
