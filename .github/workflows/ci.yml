@@ -17,10 +17,10 @@ jobs:
       - name: Node.js installieren
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 20 # Nutze '20', da '24' noch nicht überall stabil unterstützt wird
 
       - name: Abhängigkeiten installieren
-        run: npm i
+        run: npm ci
 
       - name: Lint prüfen
         run: npm run eslint
@@ -29,4 +29,4 @@ jobs:
         run: npm run build
 
       - name: Tests ausführen
-        run: npm test
+        run: npm test -- --runInBand --ci --detectOpenHandles
