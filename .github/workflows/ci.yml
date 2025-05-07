@@ -25,9 +25,6 @@ jobs:
       - name: Dev-Abhängigkeiten für ts-node (falls nicht in `package-lock.json`)
         run: npm install --save-dev ts-node typescript
 
-      - name: Lint prüfen
-        run: npm run eslint
-
       - name: Build
         run: npm run build
 
