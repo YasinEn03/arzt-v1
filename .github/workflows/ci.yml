@@ -33,7 +33,7 @@ jobs:
           docker build --tag yasinayyildiz/arzt:2025.4.1-bookworm .
           
       - name: Docker Compose starten
-        working-directory: ./extras/compose/arzt
+        working-directory: ./.extras/compose/arzt
         run: |
           docker compose up
 
