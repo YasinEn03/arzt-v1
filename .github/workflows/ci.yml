@@ -1,4 +1,4 @@
-name: Node.js CI
+name: Node.js CI & Docker Backend
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,11 +22,30 @@ jobs:
       - name: Abhängigkeiten installieren
         run: npm ci
 
-      - name: Dev-Tools installieren (tsx & vitest)
+      - name: Dev-Tools installieren
         run: npm install --save-dev tsx vitest
 
-      - name: Build
-        run: npm run build
+      - name: Backend via Compose starten
+        run: |
+          cd .extras/compose/arzt
+          docker compose up -d --build
 
-      - name: Tests ausführen (Vitest)
+      - name: Auf Backend warten
+        run: |
+          for i in {1..20}; do
+            if curl -s http://localhost:3000/health; then
+              echo "Backend ist bereit"
+              break
+            fi
+            echo "Warte auf Backend..."
+            sleep 3
+          done
+
+      - name: Tests ausführen
         run: npm test
+
+      - name: Backend stoppen
+        if: always()
+        run: |
+          cd .extras/compose/arzt
+          docker compose down
