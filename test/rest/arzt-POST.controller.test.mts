@@ -2,8 +2,8 @@ import { HttpStatus } from '@nestjs/common';
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
 import { beforeAll, describe, expect, inject, test } from 'vitest';
 import { ArztReadService } from '../../src/arzt/service/arzt-read.service';
-import { baseURL, httpsAgent } from '../constants.js';
-import { type ErrorResponse } from './error-response.js';
+import { baseURL, httpsAgent } from '../constants.mjs';
+import { type ErrorResponse } from './error-response.mjs';
 
 const token = inject('tokenRest');
 

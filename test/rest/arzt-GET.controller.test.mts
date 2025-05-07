@@ -18,8 +18,8 @@ import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
 import { beforeAll, describe, expect, test } from 'vitest';
 import { type Page } from '../../src/arzt/controller/page.js';
 import { type Arzt } from '../../src/arzt/entity/arzt.entity.js';
-import { baseURL, httpsAgent } from '../constants.js';
-import { type ErrorResponse } from './error-response.js';
+import { baseURL, httpsAgent } from '../constants.mjs';
+import { type ErrorResponse } from './error-response.mjs';
 
 // -----------------------------------------------------------------------------
 // T e s t d a t e n

@@ -4,8 +4,8 @@ import { HttpStatus } from '@nestjs/common';
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
 import { beforeAll, describe, expect, test } from 'vitest';
 import { type Arzt, type ArztArt } from '../../src/arzt/entity/arzt.entity.js';
-import { baseURL, httpsAgent } from '../constants.js';
-import { type GraphQLResponseBody } from './graphql.js';
+import { baseURL, httpsAgent } from '../constants.mjs';
+import { type GraphQLResponseBody } from './graphql.mjs';
 
 type ArztDTO = Omit<Arzt, 'patienten' | 'aktualisiert' | 'erzeugt'>;
 

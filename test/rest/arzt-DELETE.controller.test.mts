@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
 import { beforeAll, describe, expect, inject, test } from 'vitest';
-import { baseURL, httpsAgent } from '../constants.js';
+import { baseURL, httpsAgent } from '../constants.mjs';
 
 const token = inject('tokenRest');
 const tokenUser = inject('tokenRestUser');
