@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  fakesmtp:
+    image: gessnerfl/fake-smtp-server:2.4.1
+    ports:
+      - "8025:8025"  # SMTP
+      - "8026:8080"  # Web UI
+    volumes:
+      - fakesmtp_data:/tmp
+    networks: [acme-network]
+    env_file: .env
+    hostname: fakesmtp
+    container_name: fakesmtp
+    cap_drop: [ALL]
+    stop_grace_period: 3s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 768M
+        reservations:
+          cpus: "0.5"
+          memory: 768M
+
+volumes:
+  fakesmtp_data:
+
+networks:
+  acme-network:
+    name: acme-network
