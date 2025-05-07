@@ -5,7 +5,7 @@
   // https://2ality.com/2025/01/tsconfig-json.html
   // NICHT "strictest" wegen "experimentalDecorators"
   // "extends": ["@tsconfig/strictest/tsconfig", "@tsconfig/node22/tsconfig"],
-  "extends": "@tsconfig/node23/tsconfig",
+  "extends": ["@tsconfig/node23/tsconfig"],
   "ts-node": {
     "esm": true,
     "module": "es2024"
@@ -52,12 +52,12 @@
     "noUnusedParameters": true, // keine nicht-benutzen Parameter
     "preserveWatchOutput": true,
     "strict": true, // alle "strict"-Optionen aktivieren
-    "erasableSyntaxOnly": true // NICHT: enum, parameter properties in constructor(), namespace, import aliases
+    "erasableSyntaxOnly": true, // NICHT: enum, parameter properties in constructor(), namespace, import aliases
 
     // "noImplicitAny": true, // Fehler bei implizitem Typ "any", default bei strict
     // "noImplicitThis": true, // Fehler bei this mit implizitem "any", default bei strict
     // "useUnknownInCatchVariables": true // unknown als default-Typ bei catch-Klauseln, default bei strict
     // "noPropertyAccessFromIndexSignature": true, // Fehler in __tests__ bei dot-Zugriff auf nicht-definierte Properties, z.B. response.data.statusCode
-    // "allowJs": true, // wegen ts-jest und ESM
+    "allowJs": true // wegen ts-jest und ESM
   }
 }
