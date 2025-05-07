@@ -17,10 +17,13 @@ jobs:
       - name: Node.js installieren
         uses: actions/setup-node@v4
         with:
-          node-version: 20 # Nutze '20', da '24' noch nicht überall stabil unterstützt wird
+          node-version: 20
 
       - name: Abhängigkeiten installieren
         run: npm ci
+
+      - name: Dev-Abhängigkeiten für ts-node (falls nicht in `package-lock.json`)
+        run: npm install --save-dev ts-node typescript
 
       - name: Lint prüfen
         run: npm run eslint
