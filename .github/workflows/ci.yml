@@ -1,4 +1,4 @@
-name: Node.js CI
+name: Node.js CI & Docker Backend
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,11 +22,29 @@ jobs:
       - name: Abhängigkeiten installieren
         run: npm ci
 
-      - name: Dev-Tools installieren (tsx & vitest)
+      - name: Dev-Tools installieren
         run: npm install --save-dev tsx vitest
 
-      - name: Build
-        run: npm run build
+      - name: Docker-Setup (QEMU + Buildx)
+        uses: docker/setup-buildx-action@v3
 
-      - name: Tests ausführen (Vitest)
+      - name: Docker Image bauen
+        run: |
+          docker build --tag yasinayyildiz/arzt:2025.4.1-bookworm .
+          
+      - name: Docker Compose starten
+        working-directory: ./.extras/compose/arzt
+        run: |
+          docker compose up
+
+      - name: Warten bis Dienste bereit sind (optional)
+        run: sleep 80
+        
+      - name: Tests ausführen
         run: npm test
+
+      - name: Backend stoppen
+        if: always()
+        run: |
+          cd .extras/compose/arzt
+          docker compose down
