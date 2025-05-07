@@ -3,7 +3,7 @@ import { type GraphQLRequest } from '@apollo/server';
 import { HttpStatus } from '@nestjs/common';
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
 import { beforeAll, describe, expect, test } from 'vitest';
-import { ArztArt, type Arzt } from '../../src/arzt/entity/arzt.entity.js';
+import { type Arzt, type ArztArt } from '../../src/arzt/entity/arzt.entity.js';
 import { baseURL, httpsAgent } from '../constants.mjs';
 import { type GraphQLResponseBody } from './graphql.mjs';
 
@@ -14,9 +14,10 @@ type ArztDTO = Omit<Arzt, 'patienten' | 'aktualisiert' | 'erzeugt'>;
 // -----------------------------------------------------------------------------
 const idVorhanden = '1';
 
-const nameVorhanden = 'Bernd Brot';
+const nameVorhanden = 'Max Mustermann';
 
-const praxisVorhanden = 'Praxis 1';
+const praxisVorhanden = 'Dr. Müller';
+const praxisNichtVorhanden = 'Musterpraxis';
 
 // -----------------------------------------------------------------------------
 // T e s t s
@@ -44,9 +45,11 @@ describe('GraphQL Queries', () => {
             query: `
                 {
                     arzt(id: "${idVorhanden}") {
-                        id
                         name
+                        version
+                        fachgebiet
                         art
+                        geburtsdatum
                         schlagwoerter
                         praxis {
                             praxis
@@ -110,18 +113,18 @@ describe('GraphQL Queries', () => {
         expect(extensions!.code).toBe('BAD_USER_INPUT');
     });
 
-    test.concurrent('Arzt zu vorhandener Praxus', async () => {
+    test.concurrent('Arzt zu vorhandener Praxis', async () => {
         // given
         const body: GraphQLRequest = {
             query: `
                 {
                     aerzte(suchkriterien: {
-                        praxis: "${nameVorhanden}"
+                        praxis: "${praxisVorhanden}"
                     }) {
-                        art
                         praxis {
                             praxis
-                        }
+                        } 
+                        art
                     }
                 }   
             `,
@@ -145,14 +148,15 @@ describe('GraphQL Queries', () => {
         const [arzt] = aerzte;
 
         expect(arzt!.praxis?.praxis).toBe(praxisVorhanden);
+    });
 
-        test.concurrent('Arzt zu nicht vorhandenem Praxis', async () => {
-            // given
-            const body: GraphQLRequest = {
-                query: `
+    test.concurrent('Arzt zu nicht vorhandenem Praxis', async () => {
+        // given
+        const body: GraphQLRequest = {
+            query: `
                 {
                     aerzte(suchkriterien: {
-                        praxis: "${nameVorhanden}"
+                        praxis: "${praxisNichtVorhanden}"
                     }) {
                         praxis {
                             praxis
@@ -160,41 +164,35 @@ describe('GraphQL Queries', () => {
                     }
                 }
             `,
-            };
+        };
 
-            // when
-            const {
-                status,
-                headers,
-                data,
-            }: AxiosResponse<GraphQLResponseBody> = await client.post(
-                graphqlPath,
-                body,
-            );
+        // when
+        const { status, headers, data }: AxiosResponse<GraphQLResponseBody> =
+            await client.post(graphqlPath, body);
 
-            // then
-            expect(status).toBe(HttpStatus.OK);
-            expect(headers['content-type']).toMatch(/json/iu);
-            expect(data.data!.aerzte).toBeNull();
+        // then
+        expect(status).toBe(HttpStatus.OK);
+        expect(headers['content-type']).toMatch(/json/iu);
+        expect(data.data!.aerzte).toBeNull();
 
-            const { errors } = data;
+        const { errors } = data;
 
-            expect(errors).toHaveLength(1);
+        expect(errors).toHaveLength(1);
 
-            const [error] = errors!;
-            const { message, path, extensions } = error;
+        const [error] = errors!;
+        const { message, path, extensions } = error;
 
-            expect(message).toMatch(/^Keine Aerzte gefunden:/u);
-            expect(path).toBeDefined();
-            expect(path![0]).toBe('aerzte');
-            expect(extensions).toBeDefined();
-            expect(extensions!.code).toBe('BAD_USER_INPUT');
-        });
+        expect(message).toMatch(/^Keine Aerzte gefunden:/u);
+        expect(path).toBeDefined();
+        expect(path![0]).toBe('aerzte');
+        expect(extensions).toBeDefined();
+        expect(extensions!.code).toBe('BAD_USER_INPUT');
+    });
 
-        test.concurrent('Arzt zu vorhandenem NAMEN', async () => {
-            // given
-            const body: GraphQLRequest = {
-                query: `
+    test.concurrent('Arzt zu vorhandenem NAMEN', async () => {
+        // given
+        const body: GraphQLRequest = {
+            query: `
                 {
                     aerzte(suchkriterien: {
                         name: "${nameVorhanden}"
@@ -206,42 +204,31 @@ describe('GraphQL Queries', () => {
                     }
                 }
             `,
-            };
+        };
 
-            // when
-            const {
-                status,
-                headers,
-                data,
-            }: AxiosResponse<GraphQLResponseBody> = await client.post(
-                graphqlPath,
-                body,
-            );
+        // when
+        const { status, headers, data }: AxiosResponse<GraphQLResponseBody> =
+            await client.post(graphqlPath, body);
 
-            // then
-            expect(status).toBe(HttpStatus.OK);
-            expect(headers['content-type']).toMatch(/json/iu);
-            expect(data.errors).toBeUndefined();
+        // then
+        expect(status).toBe(HttpStatus.OK);
+        expect(headers['content-type']).toMatch(/json/iu);
+        expect(data.errors).toBeUndefined();
+        expect(data.data).toBeDefined();
 
-            expect(data.data).toBeDefined();
+        const { aerzte } = data.data! as { aerzte: ArztDTO[] };
 
-            const { aerzte } = data.data!;
+        expect(aerzte).not.toHaveLength(0);
+        expect(aerzte).toHaveLength(1);
 
-            expect(aerzte).not.toHaveLength(0);
+        const [arzt] = aerzte;
+        const { name, praxis } = arzt!;
 
-            const aerzteArray: ArztDTO[] = aerzte;
-
-            expect(aerzteArray).toHaveLength(1);
-
-            const [arzt] = aerzteArray;
-            const { name, praxis } = arzt!;
-
-            expect(name).toBe(nameVorhanden);
-            expect(praxis?.praxis).toBeDefined();
-        });
+        expect(name).toBe(nameVorhanden);
+        expect(praxis?.praxis).toBeDefined();
     });
 
-    test.concurrent('Buecher zur Art "EPUB"', async () => {
+    test.concurrent('Aerzte zur Art "C"', async () => {
         // given
         const arztArt: ArztArt = 'C';
         const body: GraphQLRequest = {
@@ -281,7 +268,7 @@ describe('GraphQL Queries', () => {
         });
     });
 
-    test.concurrent('Buecher zur einer ungueltigen Art', async () => {
+    test.concurrent('Aerzte zur einer ungueltigen Art', async () => {
         // given
         const arztArt = 'UNGUELTIG';
         const body: GraphQLRequest = {

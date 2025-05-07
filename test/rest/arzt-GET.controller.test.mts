@@ -24,8 +24,8 @@ import { type ErrorResponse } from './error-response.mjs';
 // -----------------------------------------------------------------------------
 // T e s t d a t e n
 // -----------------------------------------------------------------------------
-const praxisVorhanden = 'a';
-const praxisNichtVorhanden = 'xx';
+const praxisVorhanden = 'Dr. Müller';
+const praxisNichtVorhanden = 'Praxis nicht existent';
 const schlagwortVorhanden = 'javascript';
 const schlagwortNichtVorhanden = 'csharp';
 
@@ -114,7 +114,7 @@ describe('GET /rest', () => {
             await client.get('/', { params });
 
         // then
-        expect(status).toBe(HttpStatus.FOUND);
+        expect(status).toBe(HttpStatus.OK);
         expect(headers['content-type']).toMatch(/json/iu);
         expect(data).toBeDefined();
         expect(data.content.length).toBeGreaterThan(0);

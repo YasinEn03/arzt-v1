@@ -28,7 +28,7 @@ describe('DELETE /rest', () => {
         });
     });
 
-    test.concurrent('Vorhandenes Arzt loeschen', async () => {
+    test.concurrent('Vorhandenen Arzt loeschen', async () => {
         // given
         const url = `/${id}`;
         const headers: Record<string, string> = {

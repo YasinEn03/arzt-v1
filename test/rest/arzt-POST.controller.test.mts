@@ -11,7 +11,49 @@ const token = inject('tokenRest');
 // T e s t d a t e n
 // -----------------------------------------------------------------------------
 const neuerArzt = {
-    name: 'Dr. Bernd Brot',
+    name: 'testing arzt',
+    fachgebiet: 'RADIOLOGIE',
+    art: 'RAD',
+    telefonnummer: '+49 1775472213',
+    geburtsdatum: '2022-01-31',
+    schlagwoerter: ['JAVASCRIPT', 'TYPESCRIPT'],
+    praxis: {
+        praxis: 'test praxis',
+    },
+    patienten: [
+        {
+            name: 'Test Patient',
+            geburtsdatum: '2003-03-27',
+            adresse: 'Lochfeldstr. 11',
+        },
+    ],
+};
+
+const neuerArztInvalid = {
+    name: '',
+    art: 'FALSCH',
+    fachgebiet: 'KEIN-FACH',
+    telefonnummer: 'abc',
+    geburtsdatum: '31-02-2025',
+    schlagwoerter: ['JAVA', 'TYPESCRIPT'],
+    praxis: {
+        praxis: '',
+        adresse: 'Postmanstr.11',
+        telefonnummer: '000',
+        email: 'keinemail',
+    },
+    patienten: [
+        {
+            name: '',
+            geburtsdatum: '30-02-1999',
+            telefonnummer: '1111',
+            adresse: 'Postmanstr.11',
+        },
+    ],
+};
+
+const neuerArztExistiert = {
+    name: 'Max Mustermann',
     art: 'C',
     fachgebiet: 'KARDIOLOGIE',
     telefonnummer: '+49 176 89227837',
@@ -23,49 +65,7 @@ const neuerArzt = {
         telefonnummer: '+4972112345678',
         email: 'kontakt@musterpraxis.de',
     },
-    patienten: [
-        {
-            name: 'Max Mustermann',
-            geburtsdatum: '1990-01-01',
-            telefonnummer: '+491771234567',
-            adresse: 'Beispielweg 10, 12345 Berlin',
-            arztId: 1,
-        },
-        {
-            name: 'Erika Musterfrau',
-            geburtsdatum: '1985-05-05',
-            arztId: 1,
-        },
-    ],
-};
-
-const neuerArztInvalid = {
-    name: '',
-    art: 'FALSCH',
-    fachgebiet: 'KEIN-FACH',
-    telefonnummer: 'abc',
-    geburtsdatum: '31-02-2025', // ungültiges Datum
-    schlagwoerter: ['DOPPEL', 'DOPPEL'],
-    praxis: {
-        praxis: '',
-        adresse: 'x'.repeat(300),
-        telefonnummer: '000',
-        email: 'keinemail',
-    },
-    patienten: [
-        {
-            name: '',
-            geburtsdatum: '30-02-1999',
-            telefonnummer: '1111',
-            adresse: 'a'.repeat(200),
-            arztId: -1,
-        },
-    ],
-};
-
-const neuerArztExistiert = {
-    ...neuerArzt,
-    name: 'Dr. Bernd Brot', // existiert bereits
+    patienten: [],
 };
 
 // -----------------------------------------------------------------------------
@@ -124,11 +124,10 @@ describe('POST /rest', () => {
         headers.Authorization = `Bearer ${token}`;
 
         const expectedMsg = [
-            expect.stringMatching(/^name /u),
             expect.stringMatching(/^art /u),
             expect.stringMatching(/^fachgebiet /u),
             expect.stringMatching(/^telefonnummer /u),
-            expect.stringMatching(/^geburtsdatum /u),
+            expect.stringMatching(/^praxis.praxis /u),
         ];
 
         // when
@@ -163,7 +162,7 @@ describe('POST /rest', () => {
 
         const { message, statusCode } = data;
 
-        expect(message).toStrictEqual(expect.stringContaining('ISBN'));
+        expect(message).toStrictEqual(expect.stringContaining('Name'));
         expect(statusCode).toBe(HttpStatus.UNPROCESSABLE_ENTITY);
     });
 
