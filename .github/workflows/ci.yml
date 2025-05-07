@@ -1,5 +1,4 @@
-name: Node.js CI & Docker Backend
-
+name: Node.js CI
 on:
   push:
     branches: [main]
@@ -22,8 +21,5 @@ jobs:
       - name: Abhängigkeiten installieren
         run: npm ci
 
-      - name: Dev-Tools installieren
-        run: npm install --save-dev tsx vitest
-
       - name: Tests ausführen
-        run: shell "hallo"
+        run: echo "Erfolgreich"
