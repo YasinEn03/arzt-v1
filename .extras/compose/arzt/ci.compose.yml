@@ -4,22 +4,37 @@ include:
   - path: ../postgres/compose.yml
   - path: ../fakesmtp/compose.yml
   - path: ../keycloak/ci-compose.yml
-
+  
+# https://docs.docker.com/compose/compose-file/05-services
 services:
   arzt:
     image: yasinayyildiz/arzt:2025.4.1-bookworm
+    #image: yasinayyildiz/arzt:2025.4.1-alpine
     depends_on:
       db:
         condition: service_healthy
     ports:
-      - "3000:3000"
+      - published: 3000
+        target: 3000
     volumes:
-      - arzt_config:/opt/app/dist/config/resources
-      - arzt_log:/tmp/log
-      - arzt_db:/opt/app/dist/config/resources/sqlite
-    networks:
-      - acme-network
+      - type: bind
+        source: app.yml
+        target: /opt/app/dist/config/resources/app.yml
+        read_only: true
+      - type: bind
+        source: ../../../log
+        target: /tmp/log
+        read_only: true
+      - type: bind
+        source: ../../../src/config/resources/tls/key.pem
+        target: /opt/app/dist/config/resources/tls/key.pem
+        read_only: true
+      - type: bind
+        source: ../../../src/config/resources/sqlite/arzt.sqlite
+        target: /opt/app/dist/config/resources/sqlite/arzt.sqlite
+    networks: [acme-network]
     env_file: .env
+    #hostname: arzt
     cap_drop: [ALL]
     deploy:
       resources:
@@ -29,11 +44,6 @@ services:
         reservations:
           cpus: "1.0"
           memory: 1G
-
-volumes:
-  arzt_config:
-  arzt_log:
-  arzt_db:
 
 networks:
   acme-network:
