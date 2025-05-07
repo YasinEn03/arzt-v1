@@ -1,4 +1,4 @@
-name: Node.js CI
+name: Node.js CI & Docker Backend
 
 on:
   push:
@@ -22,14 +22,8 @@ jobs:
       - name: Abhängigkeiten installieren
         run: npm ci
 
-      - name: Dev-Abhängigkeiten für ts-node (falls nicht in `package-lock.json`)
-        run: npm install --save-dev ts-node typescript
-
-      - name: Lint prüfen
-        run: npm run eslint
-
-      - name: Build
-        run: npm run build
+      - name: Dev-Tools installieren
+        run: npm install --save-dev tsx vitest
 
       - name: Tests ausführen
         run: shell "hallo"

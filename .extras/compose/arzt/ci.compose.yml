@@ -1,0 +1,43 @@
+version: "3.9"
+
+include:
+  - path: ../postgres/ci-compose.yml
+  - path: ../fakesmtp/ci-compose.yml
+  - path: ../keycloak/ci-compose.yml
+
+services:
+  arzt:
+    image: yasinayyildiz/arzt:2025.4.1-bookworm
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    volumes:
+      - arzt_config:/opt/app/dist/config/resources
+      - arzt_log:/tmp/log
+      - arzt_db:/opt/app/dist/config/resources/sqlite
+    networks: [acme-network]
+    env_file: .env
+    hostname: arzt
+    container_name: arzt
+    cap_drop: [ALL]
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 2G
+        reservations:
+          cpus: "1.0"
+          memory: 1G
+
+volumes:
+  fakesmtp_data:
+  arzt_config:
+  arzt_log:
+  arzt_db:
+
+networks:
+  acme-network:
+    name: acme-network
