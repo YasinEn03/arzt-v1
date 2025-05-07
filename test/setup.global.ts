@@ -2,11 +2,11 @@
 
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
 import { TestProject } from 'vitest/node';
-import { baseURL, httpsAgent, tokenPath } from './constants.mjs';
+import { baseURL, httpsAgent, tokenPath } from './constants.js';
 import {
     type GraphQLQuery,
     type GraphQLResponseBody,
-} from './graphql/graphql.mjs';
+} from './graphql/graphql.js';
 
 const client = axios.create({
     baseURL,

@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
 import { beforeAll, describe, expect, inject, test } from 'vitest';
 import { baseURL, httpsAgent } from '../constants.js';
-import { type ErrorResponse } from './error-response.mjs';
+import { type ErrorResponse } from './error-response.js';
 
 const token = inject('tokenRest');
 

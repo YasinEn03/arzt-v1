@@ -7,7 +7,7 @@ export default defineConfig({
         include: ['test/**/*.{test,spec}.{ts,js,mts}'],
         globals: true,
         environment: 'node',
-        globalSetup: './test/setup.global.mts',
+        globalSetup: './test/setup.global.ts',
         testTimeout: 10_000,
         coverage: {
             include: ['src/**', 'test/**'],
