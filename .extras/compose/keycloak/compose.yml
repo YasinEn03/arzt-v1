@@ -38,7 +38,20 @@ services:
       - published: 8843
         target: 8443
     volumes:
-      - keycloak_data:/opt/keycloak/data
+      - type: bind
+        source: C:/Zimmermann/volumes/keycloak/data
+        # mit Unterverzeichnis h2
+        target: /opt/keycloak/data
+      - type: bind
+        source: key.pem
+        # https://www.keycloak.org/server/enabletls
+        target: /opt/keycloak/conf/key.pem
+        read_only: true
+      - type: bind
+        source: certificate.crt
+        target: /opt/keycloak/conf/certificate.crt
+        read_only: true
+      # ggf. /opt/keycloak/conf/keycloak.conf
     networks: [acme-network]
     env_file: .env
     hostname: keycloak
