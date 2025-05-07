@@ -20,7 +20,7 @@ jobs:
           node-version: 20
 
       - name: Abhängigkeiten installieren
-        run: npm ci
+        run: npm i
 
       - name: Lint prüfen
         run: npm run eslint
