@@ -36,9 +36,6 @@ jobs:
         working-directory: ./.extras/compose/arzt
         run: |
           docker compose -f ci.compose.yml up -d
-
-      - name: Warten bis Dienste bereit sind (optional)
-        run: sleep 80
         
       - name: Tests ausführen
         run: npm test
@@ -47,4 +44,4 @@ jobs:
         if: always()
         run: |
           cd .extras/compose/arzt
-          docker compose -f ci.compose.yml down -d
+          docker compose -f ci.compose.yml down
