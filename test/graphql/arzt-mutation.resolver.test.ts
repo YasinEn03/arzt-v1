@@ -2,8 +2,8 @@
 import { HttpStatus } from '@nestjs/common';
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
 import { beforeAll, describe, expect, inject, test } from 'vitest';
-import { baseURL, httpsAgent } from '../constants.mjs';
-import { type GraphQLQuery, type GraphQLResponseBody } from './graphql.mjs';
+import { baseURL, httpsAgent } from '../constants.js';
+import { type GraphQLQuery, type GraphQLResponseBody } from './graphql.js';
 
 const token = inject('tokenGraphql');
 const tokenUser = inject('tokenGraphqlUser');
