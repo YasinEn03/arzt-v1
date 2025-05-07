@@ -1,8 +1,8 @@
 version: "3.9"
 
 include:
-  - path: ../postgres/compose.yml
-  - path: ../fakesmtp/compose.yml
+  - path: ../postgres/ci-compose.yml
+  - path: ../fakesmtp/ci-compose.yml
   - path: ../keycloak/ci-compose.yml
   
 # https://docs.docker.com/compose/compose-file/05-services
