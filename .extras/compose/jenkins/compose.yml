@@ -33,7 +33,7 @@
 
 services:
   docker:
-    image: docker:28.0.4-dind
+    image: docker:28.1.1-dind
     restart: always
     ports:
       - published: 3000
@@ -67,7 +67,7 @@ services:
           memory: 4G
 
   jenkins:
-    image: juergenzimmermann/jenkins:2025.4.1
+    image: jenkins:2.509-jdk21
     restart: always
     ports:
       - published: 7070

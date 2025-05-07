@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.14.0
+# syntax=docker.io/docker/dockerfile-upstream:1.15.1
 
 # Copyright (C) 2023 - present, Juergen Zimmermann, Hochschule Karlsruhe
 #
@@ -15,12 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-# Aufruf:   docker build --tag yasinayyildiz/arzt:2025.4.1-bookworm .
+# Aufruf:   docker build --tag juergenzimmermann/arzt:2025.4.1-bookworm .
 #               ggf. --progress=plain
 #               ggf. --no-cache
 #           Get-Content Dockerfile | docker run --rm --interactive hadolint/hadolint:2.12.1-beta-debian
 #               Linux:   cat Dockerfile | docker run --rm --interactive hadolint/hadolint:2.12.1-beta-debian
-#           docker save yasinayyildiz/arzt:2025.4.1-bookworm > arzt.tar
+#           docker save juergenzimmermann/arzt:2025.4.1-bookworm > arzt.tar
 #           docker network ls
 
 # https://docs.docker.com/engine/reference/builder/#syntax
@@ -31,7 +31,7 @@
 # https://snyk.io/blog/10-best-practices-to-containerize-nodejs-web-applications-with-docker
 # https://cheatsheetseries.owasp.org/cheatsheets/NodeJS_Docker_Cheat_Sheet.html
 
-ARG NODE_VERSION=23.11.0
+ARG NODE_VERSION=24.0.0
 
 # ---------------------------------------------------------------------------------------
 # S t a g e   d i s t
@@ -129,7 +129,7 @@ LABEL org.opencontainers.image.title="arzt" \
   org.opencontainers.image.description="Appserver arzt mit Basis-Image Debian Bookworm" \
   org.opencontainers.image.version="2025.4.1-bookworm" \
   org.opencontainers.image.licenses="GPL-3.0-or-later" \
-  org.opencontainers.image.authors="ayya1011@h-ka.de"
+  org.opencontainers.image.authors="Juergen.Zimmermann@h-ka.de"
 
 RUN <<EOF
 set -eux
