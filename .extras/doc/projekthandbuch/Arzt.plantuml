@@ -1,0 +1,68 @@
+@startuml Entity
+
+package typeorm {
+  class "@Entity" as Entity
+  hide Entity circle
+  class "@Column" as Column
+  hide Column circle
+  class "@PrimaryColumn" as PrimaryColumn
+  hide PrimaryColumn circle
+  class "@OneToMany" as OneToMany
+  hide OneToMany circle
+  class "@JoinColumn" as JoinColumn
+  hide JoinColumn circle
+  class "@ManyToOne" as ManyToOne
+  hide ManyToOne circle
+  class "@CreateDateColumn" as CreateDateColumn
+  hide CreateDateColumn circle
+  class "@UpdateDateColumn" as UpdateDateColumn
+  hide UpdateDateColumn circle
+}
+
+package arzt.entity {
+  class "type ArztArt = 'KINDLE' | 'DRUCKAUSGABE'" as ArztArt
+  hide ArztArt circle
+
+  class Arzt <<entity>> <<@Entity>> {
+    @Column() @PrimaryColumn() readonly id: number
+    @Column() readonly version: number
+    @Column() readonly name: string
+    @Column() readonly art: ArztArt
+    @Column() readonly fachgebiet: string
+    @Column() readonly geburtsdatum: Date
+    @Column() readonly schlagwoerter?: string
+    @CreateDateColumn() readonly erzeugt: Date
+    @UpdateDateColumn() readonly aktualisiert: Date
+  }
+
+  class Praxis <<entity>> <<@Entity>> {
+    @Column() @PrimaryColumn() readonly id: number
+    @Column() readonly praxis!: string
+    @Column() readonly adresse: string
+    @Column() readonly telefonnummer: string
+    @Column() readonly arzt: Arzt
+
+  }
+
+  class Patienten <<entity>> <<@Entity>> {
+    @Column() @PrimaryColumn() readonly id: number
+    @Column() readonly name: string
+    @Column() readonly geburtsdatum: Date
+    @Column() readonly telefonnummer: string
+    @Column() readonly adresse: string
+    @Column() readonly arzt: Arzt
+
+  }
+
+  Arzt *--> "1" Praxis : @OneToOne() \ntitel
+  Arzt *--> "*" Patienten : @OneToMany() \nabbildungen
+
+  Arzt .right.> Entity
+  Arzt .right.> ArztArt
+}
+
+hide empty members
+
+footer (c) Yasin Ayyildiz
+
+@enduml

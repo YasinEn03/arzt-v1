@@ -1,0 +1,71 @@
+@startuml Anwendungskern
+
+interface Promise<T>
+
+package @nestjs/common {
+  class "@Injectable" as Injectable
+  hide Injectable circle
+}
+
+package typeorm {
+  class Repository<T>
+}
+
+package @nestjs/typeorm {
+  class "@InjectRepository" as InjectRepository
+  hide InjectRepository circle
+}
+
+package mail {
+  class MailService
+}
+
+package arzt {
+  package entity {
+    class Arzt
+  }
+
+  package service #DDDDDD {
+    class ArztInvalid
+    class PraxisExists
+    class NameExists
+    class VersionInvalid
+    class VersionOutdated
+
+    class ArztWriteService << control >> <<@Injectable()>> {
+      + async create(arzt: Arzt): Promise<string|ArztInvalid|PraxisExists|NameExists>
+      + async update(id: number, arzt: Arzt, version: string): Promise<number|ArztInvalid|PraxisExists|NameExists|VersionInvalid|VersionOutdated>
+      + async delete(id: number): Promise<boolean>
+    }
+
+    ArztWriteService o--> "1" ArztValidationService: validationService
+    ArztWriteService o--> "1" ArztReadService: readService
+    ArztWriteService o--> "1" Repository: @InjectRepository repo
+    ArztWriteService o--> "1" MailService: mailService
+
+    ArztWriteService .up.> Injectable
+    ArztWriteService .up.> InjectRepository
+
+    ArztWriteService .up.> Promise
+    ArztWriteService ..> Arzt
+    ArztWriteService .up.> ArztInvalid
+    ArztWriteService .up.> PraxisExists
+    ArztWriteService .up.> NameExists
+    ArztWriteService .up.> VersionInvalid
+    ArztWriteService .up.> VersionOutdated
+
+    ArztInvalid .up[hidden].> Arzt
+    Arzt .up[hidden].> Promise
+    Arzt .up[hidden].> Injectable
+    Arzt .up[hidden].> InjectRepository
+    PraxisExists .up[hidden].> Arzt
+    ArztValidationService .[hidden].> Repository
+    ArztValidationService .[hidden].> MailService
+  }
+}
+
+hide empty members
+
+footer (c) Yasin Ayyildiz
+
+@enduml

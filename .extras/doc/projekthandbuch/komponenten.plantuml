@@ -1,0 +1,91 @@
+' Copyright (C) 2019 - present Juergen Zimmermann, Hochschule Karlsruhe
+'
+' This program is free software: you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation, either version 3 of the License, or
+' (at your option) any later version.
+'
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+' Preview durch <Alt>d
+
+@startuml Komponenten
+
+left to right direction
+
+actor RESTClient
+actor GraphQLClient
+
+node "Nest" {
+  [RequestLoggerMiddleware]
+
+  [ArztController]
+  [ArztResolver]
+
+  [ArztService]
+
+  [Repository<Arzt>]
+
+  [MailService]
+}
+
+
+cloud {
+    [TypeORM]
+}
+
+cloud {
+    [nest-keycloak-connect]
+}
+
+cloud {
+    [nodemailer]
+}
+
+database "DB arzt" {
+    [Tabelle arzt]
+    [Tabelle praxis]
+    [Tabelle patienten]
+}
+
+node {
+    [Keycloak]
+}
+
+node {
+    [Mailserver]
+}
+
+RESTClient ~~> [RequestLoggerMiddleware]
+GraphQLClient ~~> [RequestLoggerMiddleware]
+
+[RequestLoggerMiddleware] ~~> [ArztController]
+[RequestLoggerMiddleware] ~~> [ArztResolver]
+
+[ArztController] ..> [ArztService]
+[ArztResolver] ..> [ArztService]
+[ArztService] ..> [Repository<Arzt>]
+
+[Repository<Arzt>] ~~> [TypeORM]
+[TypeORM] ~~> [Tabelle arzt]
+[TypeORM] ~~> [Tabelle praxis]
+[TypeORM] ~~> [Tabelle patienten]
+
+[ArztController] ..> [nest-keycloak-connect]
+[nest-keycloak-connect] ~~> [Keycloak]
+
+[ArztService] ..> [MailService]
+[MailService] ~~> [nodemailer]
+[nodemailer] ~~> [Mailserver]
+
+[MailService] ~[hidden]~> [nest-keycloak-connect]
+
+footer (c) Yasin Ayyildiz
+
+@enduml

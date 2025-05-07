@@ -1,0 +1,63 @@
+@startuml Controller-Klasse
+
+interface Promise<T>
+
+package @nestjs/graphql {
+  class "@Resolver" as Resolver
+  hide Resolver circle
+
+  class "@UseInterceptors" as UseInterceptors
+  hide UseInterceptors circle
+
+  class "@Query" as Query
+  hide Query circle
+
+  class "@Args" as Args
+  hide Args circle
+
+  Resolver .left[hidden].> Promise
+}
+
+package arzt {
+  package entity {
+    class Arzt <<entity>>
+  }
+
+  package service {
+    class ArztReadService << control >>
+  }
+
+  package graphql #DDDDDD {
+    class "type ArztDTO = Omit<Arzt, 'patienten' | 'aktualisiert' | 'erzeugt'" as ArztDTO
+    hide ArztDTO circle
+
+    interface IdInput {
+        id: number
+    }
+
+    class ArztQueryResolver << control >> << @Resolver() >> << @UseInterceptors() >> {
+      + @Query() async arzt(@Args() id: IdInput): Promise<ArztDTO>
+      + @Query() async buecher(@Args() titel: string | undefined): Promise<ArztDTO[]>
+    }
+
+    ArztQueryResolver o-up-> "1" ArztReadService : service
+    ArztQueryResolver ..> ArztDTO
+    ArztQueryResolver ..> IdInput
+    ArztDTO ..> Arzt
+    ArztQueryResolver ..> Resolver
+
+    ArztQueryResolver ..> Promise
+
+    ArztDTO .[hidden].> Arzt
+    Arzt .[hidden].> Promise
+    ArztReadService .[hidden].> Promise
+    Arzt .[hidden].> Resolver
+    ArztReadService .[hidden].> Resolver
+  }
+}
+
+hide empty members
+
+footer (c) Yasin Ayyildiz
+
+@enduml

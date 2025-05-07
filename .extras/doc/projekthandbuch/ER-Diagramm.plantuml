@@ -1,0 +1,48 @@
+@startuml ER Diagramm
+
+' hide the spot
+hide circle
+
+' evtl. Prbleme mit Kraehenfuessen vermeiden
+skinparam linetype ortho
+
+entity "Arzt" {
+  * id: integer <<generated>>
+  --
+  * version: integer
+  * name: text
+  * art: text
+  * fachgebiet: text
+    geburtsdatum: date
+  * **praxis_id**: integer <<FK>>
+    schlagwoerter: text
+  * erzeugt: timestamp
+  * aktualisiert: timestamp
+}
+
+entity "Praxis" {
+  * id: integer <<generated>>
+  --
+  * praxis: text
+    adresse: text
+    telefonnummer: text
+    **arzt**: integer <<FK>>
+
+}
+
+entity "Patieten" {
+  * id: integer <<generated>>
+  --
+  * name: text
+    geburtsdatum: Date
+    telefonnummer: text
+    adresse: text
+  * **arzt**: integer <<FK>>
+}
+
+Arzt ||..|| Praxis
+Arzt ||..o| Patienten
+
+footer (c) Yasin Ayyildiz
+
+@enduml

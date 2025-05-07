@@ -1,0 +1,20 @@
+@startuml Use Cases
+
+actor Gast
+actor Admin
+actor Kunde
+
+rectangle buch {
+    Gast --> (Arzt suchen)
+    Admin --> (Arzt suchen)
+    Admin --> (Arzt anlegen)
+    Admin --> (Arzt ändern)
+    Admin --> (Arzt löschen)
+    Kunde --> (Arzt suchen)
+    Kunde --> (Arzt anlegen)
+    Kunde --> (Arzt ändern)
+}
+
+footer (c) Yasin Ayyildiz
+
+@enduml

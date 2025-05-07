@@ -1,0 +1,71 @@
+@startuml Controller-Klasse
+
+interface Promise<T>
+
+package @nestjs/graphql {
+  class "@Resolver" as Resolver
+  hide Resolver circle
+
+  class "@UseGuards" as UseGuards
+  hide UseGuards circle
+
+  class "@UseInterceptors" as UseInterceptors
+  hide UseInterceptors circle
+
+  class "@Mutation" as Mutation
+  hide Mutation circle
+
+  class "@Args" as Args
+  hide Args circle
+}
+
+package nest-keycloak-connect {
+  class AuthGuard
+
+  class "@Roles" as Roles
+  hide Roles circle
+}
+
+package arzt #DDDDDD {
+  package entity #FFFFFF {
+    class Arzt <<entity>>
+  }
+
+  package service #FFFFFF {
+    class ArztWriteService << control >>
+  }
+
+  class "type ArztDTO = Omit<Arzt, 'abbildungen' | 'aktualisiert' | 'erzeugt'" as ArztDTO
+  hide ArztDTO circle
+
+    interface IdInput {
+        id: number
+    }
+
+  class ArztMutationResolver << control >> << @Resolver() >> << @UseGuards() >> << @UseInterceptors() >> {
+    + @Mutation() @Roles() async create(@Args() arztDTO: ArztDTO): Promise<number>
+    + @Mutation() @Roles() async update(@Args() arztDTO: ArztDTO): Promise<number>
+    + @Mutation() @Roles() async delete(@Args() id: IdInput): Promise<boolean>
+  }
+
+  ArztMutationResolver o-down-> "1" ArztWriteService : service
+
+  ArztMutationResolver ..> Arzt
+  ArztMutationResolver ..> ArztDTO
+  ArztMutationResolver ..> IdInput
+  ArztDTO .up.> Arzt
+  ArztMutationResolver ..> Promise
+  ArztMutationResolver ..> Resolver
+
+  ArztMutationResolver .up.> AuthGuard
+  ArztMutationResolver .up.> Roles
+
+  ArztDTO .[hidden].> Promise
+  ArztDTO .[hidden].> Resolver
+}
+
+hide empty members
+
+footer (c) Juergen Zimmermann
+
+@enduml

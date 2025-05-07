@@ -1,0 +1,15 @@
+@startuml Sequenzdiagramm
+
+actor Gast
+
+boundary ArztGetController
+control ArztReadService
+database arzt
+
+Gast -> ArztGetController : GET / getById()
+ArztGetController -> ArztReadService: findById()
+ArztReadService -> arzt: [TypeORM]
+
+footer (c) Yasin Ayyildiz
+
+@enduml
