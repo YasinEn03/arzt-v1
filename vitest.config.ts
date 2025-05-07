@@ -4,7 +4,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
     test: {
         name: 'Beispiel',
-        include: ['test/**/*.{test,spec}.mts'],
+        include: ['test/**/*.{test,spec}.{ts,js,mts}'],
         globals: true,
         environment: 'node',
         globalSetup: './test/setup.global.mts',
