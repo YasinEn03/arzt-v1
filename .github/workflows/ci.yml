@@ -22,11 +22,11 @@ jobs:
       - name: Abhängigkeiten installieren
         run: npm ci
 
-      - name: Dev-Abhängigkeiten für ts-node (falls nicht in `package-lock.json`)
-        run: npm install --save-dev ts-node typescript
+      - name: Dev-Tools installieren (tsx & vitest)
+        run: npm install --save-dev tsx vitest
 
       - name: Build
         run: npm run build
 
-      - name: Tests ausführen
-        run: npm test
+      - name: Tests ausführen (Vitest)
+        run: npx test
