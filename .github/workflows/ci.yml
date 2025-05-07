@@ -35,7 +35,7 @@ jobs:
       - name: Docker Compose starten
         working-directory: ./.extras/compose/arzt
         run: |
-          docker compose up
+          docker compose -f ci.compose.yml up -d
 
       - name: Warten bis Dienste bereit sind (optional)
         run: sleep 80
@@ -47,4 +47,4 @@ jobs:
         if: always()
         run: |
           cd .extras/compose/arzt
-          docker compose down
+          docker compose -f ci.compose.yml down -d
