@@ -5,7 +5,7 @@
   // https://2ality.com/2025/01/tsconfig-json.html
   // NICHT "strictest" wegen "experimentalDecorators"
   // "extends": ["@tsconfig/strictest/tsconfig", "@tsconfig/node22/tsconfig"],
-  "extends": ["@tsconfig/node23/tsconfig"],
+  "extends": "@tsconfig/node23/tsconfig",
   "ts-node": {
     "esm": true,
     "module": "es2024"
