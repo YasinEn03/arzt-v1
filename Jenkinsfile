@@ -1,29 +1,11 @@
 #!groovy
-
-/*
- * Copyright (C) 2020 - present Juergen Zimmermann, Hochschule Karlsruhe
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 // https://www.jenkins.io/doc/tutorials/create-a-pipeline-in-blue-ocean
 
 pipeline {
     // agent any
     agent {
         docker {
-            image 'node:24.0.0-bookworm'
+            image 'node:22.9.0-bookworm'
             // https://stackoverflow.com/questions/62330354/jenkins-pipeline-alpine-agent-apk-update-error-unable-to-lock-database-permis
             // https://stackoverflow.com/questions/42630894/jenkins-docker-how-to-control-docker-user-when-using-image-inside-command/51986870#51986870
             // https://stackoverflow.com/questions/42743201/npm-install-fails-in-jenkins-pipeline-in-docker
@@ -76,7 +58,7 @@ pipeline {
 
                 // https://www.jenkins.io/doc/pipeline/steps/git
                 // "named arguments" statt Funktionsaufruf mit Klammern
-                git url: 'https://github.com/yasinen03/arzt', branch: 'main', poll: true
+                git url: 'https://github.com/YasinEn03/arzt-v1', branch: 'main', poll: true
             }
         }
 
@@ -105,9 +87,9 @@ pipeline {
                 // https://cloudcone.com/docs/article/how-to-install-python-3-10-on-debian-11
                 // https://linuxhint.com/install-python-debian-10
                 // https://computingforgeeks.com/how-to-install-python-on-debian-linux
-                // sh 'apt-get install --no-install-recommends --yes --show-progress gcc=4:12.2.0-3 g++=4:12.2.0-3 make=4.3-4.1 python3.11-minimal=3.11.2-6+deb12u4'
+                sh 'apt-get install --no-install-recommends --yes --show-progress gcc=4:12.2.0-3 g++=4:12.2.0-3 make=4.3-4.1 python3.11-minimal=3.11.2-6+deb12u3'
                 // sh 'apt show python3.11-minimal'
-                // sh 'apt-get install --no-install-recommends --yes --show-progress ca-certificates=20230311 curl=7.88.1-10+deb12u8 gnupg=2.2.40-1.1'
+                sh 'apt-get install --no-install-recommends --yes --show-progress ca-certificates=20230311 curl=7.88.1-10+deb12u7 gnupg=2.2.40-1.1'
                 sh 'apt-get update --yes'
                 sh 'apt-get upgrade --yes'
                 sh 'python3 --version'
@@ -132,7 +114,7 @@ pipeline {
                 }
 
                 // /var/jenkins_home ist das Homedirectory vom User "jenkins"
-                // /var/jenkins_home/workspace/arzt (siehe "pwd" oben)
+                // /var/jenkins_home/workspace/arzt-v1 (siehe "pwd" oben)
                 sh 'cat package.json'
 
                 // Konfigurationsverzeichnis /root/.npm
@@ -180,57 +162,54 @@ pipeline {
 
             post {
                 always {
-                    echo 'TODO: Links fuer Coverage und TypeDoc'
-                    //publishHTML target : [
-                    //  reportDir: 'coverage',
-                    //  reportFiles: 'index.html',
-                    //  reportName: 'Coverage (Istanbul)',
-                    //  reportTitles: 'Coverage'
-                    //]
+                  echo 'TODO: Links fuer Coverage und TypeDoc'
+                  //publishHTML target : [
+                  //  reportDir: 'coverage',
+                  //  reportFiles: 'index.html',
+                  //  reportName: 'Coverage (Istanbul)',
+                  //  reportTitles: 'Coverage'
+                  //]
 
-                    publishHTML (target : [
-                        reportDir: '.extras/doc/projekthandbuch/html',
-                        reportFiles: 'projekthandbuch.html',
-                        reportName: 'Projekthandbuch',
-                        reportTitles: 'Projekthandbuch'
-                    ])
+                  publishHTML (target : [
+                      reportDir: '.extras/doc/projekthandbuch/html',
+                      reportFiles: 'projekthandbuch.html',
+                      reportName: 'Projekthandbuch',
+                      reportTitles: 'Projekthandbuch'
+                  ])
 
-                    publishHTML target : [
-                        reportDir: '.extras/doc/folien',
-                        reportFiles: 'folien.html',
-                        reportName: 'Folien (reveal.js)',
-                        reportTitles: 'reveal.js'
-                    ]
+                  publishHTML target : [
+                      reportDir: '.extras/doc/folien',
+                      reportFiles: 'folien.html',
+                      reportName: 'Folien (reveal.js)',
+                      reportTitles: 'reveal.js'
+                  ]
 
-                    publishHTML target : [
-                        reportDir: '.extras/doc/api',
-                        reportFiles: 'index.html',
-                        reportName: 'TypeDoc',
-                        reportTitles: 'TypeDoc'
-                    ]
+                  publishHTML target : [
+                      reportDir: '.extras/doc/api',
+                      reportFiles: 'index.html',
+                      reportName: 'TypeDoc',
+                      reportTitles: 'TypeDoc'
+                  ]
                 }
 
                 success {
                     script {
-                        if (fileExists("${env.WORKSPACE}/arzt.zip")) {
-                            sh 'rm arzt.zip'
+                        if (fileExists("${env.WORKSPACE}/arzt-v1.zip")) {
+                            sh 'rm arzt-v1.zip'
                         }
                     }
                     // https://www.jenkins.io/doc/pipeline/steps/pipeline-utility-steps/#zip-create-zip-file
-                    zip zipFile: 'arzt.zip', archive: false, dir: 'dist'
-                    // jobs/arzt/builds/.../archive/arzt.zip
-                    archiveArtifacts 'arzt.zip'
+                    zip zipFile: 'arzt-v1.zip', archive: false, dir: 'dist'
+                    // jobs/arzt-v1/builds/.../archive/arzt-v1.zip
+                    archiveArtifacts 'arzt-v1.zip'
                 }
             }
         }
 
         stage('Docker Image bauen') {
             steps {
-                echo 'TODO: Docker-Image bauen'
-                // https://www.jenkins.io/doc/book/pipeline/docker/#building-containers
-                // def image = docker.build("juergenzimmermann/arzt:${env.BUILD_ID}")
-                // image.push()
-                // image.push('latest')
+                echo 'TODO: Docker-Image bauen und veroeffentlichen'
+                // sh 'docker buildx build --tag yasinayyildiz/arzt-v1:2024.10.1 .'
             }
         }
 
