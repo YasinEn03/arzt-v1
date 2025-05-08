@@ -26,7 +26,7 @@ jobs:
         run: tsc
 
       - name: NestJS bauen
-        run: nest build
+        run: npm build
 
       - name: Tests ausführen
         run: npm test
