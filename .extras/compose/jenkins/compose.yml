@@ -67,7 +67,7 @@ services:
           memory: 4G
 
   jenkins:
-    image: jenkins:2.509-jdk21
+    image: juergenzimmermann/jenkins:2025.4.1
     restart: always
     ports:
       - published: 7070
@@ -77,7 +77,7 @@ services:
     networks: [jenkins-network]
     volumes:
       - type: bind
-        # /var/jenkins_home/workspace enthaelt das Verzeichnis "arzt"
+        # /var/jenkins_home/workspace enthaelt das Verzeichnis "buch"
         source: C:/Zimmermann/volumes/jenkins/jenkins_home
         target: /var/jenkins_home
       - type: bind
