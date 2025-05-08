@@ -49,7 +49,7 @@ package express {
   Response .[hidden].> Controller
 }
 
-package buch {
+package arzt {
   package entity #FFFFFF {
     class Arzt <<entity>>
 

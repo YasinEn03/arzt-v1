@@ -21,10 +21,10 @@ db:
 
   #host: localhost
 
-  #username: buch
+  #username: arzt
   #password: p
   #passwordAdmin: p
-  #name: buch
+  #name: arzt
   populate: true
 
 # ==============================================================================
