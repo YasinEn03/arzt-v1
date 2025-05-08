@@ -20,7 +20,7 @@ package typeorm {
 }
 
 package arzt.entity {
-  class "type ArztArt = 'KINDLE' | 'DRUCKAUSGABE'" as ArztArt
+  class "type ArztArt = 'KARDIOLOGIE' | 'RADIOLOGIE'" as ArztArt
   hide ArztArt circle
 
   class Arzt <<entity>> <<@Entity>> {
