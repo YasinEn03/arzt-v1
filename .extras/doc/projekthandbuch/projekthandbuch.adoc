@@ -16,7 +16,7 @@
 // Preview durch <Strg><Shift>v
 
 = Projekthandbuch
-Jürgen Zimmermann <Juergen.Zimmermann@h-ka.de>
+Yasin Ayyildiz <ayya1011@h-ka.de>
 :doctype: book
 :toc: left
 :sectanchors:
